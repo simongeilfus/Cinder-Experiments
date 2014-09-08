@@ -6,6 +6,7 @@
 #include "cinder/gl/GlslProg.h"
 #include "cinder/gl/VboMesh.h"
 #include "cinder/gl/Shader.h"
+#include "cinder/gl/ConstantStrings.h"
 
 #include "cinder/GeomIo.h"
 #include "cinder/Rand.h"
@@ -146,12 +147,12 @@ void MultipleRenderTargetsApp::draw()
         gl::viewport( toPixels( getWindowSize() ) );
         
         // switch between the different color attachments
-        int att = ci::math<int>::clamp( ( getMousePos().x - getWindowPos().x ) / (float) getWindowWidth() * 4, 0, 3 );
-        gl::ScopedTextureBind texBind( mFbo->getTexture( GL_COLOR_ATTACHMENT0 + att ) );
+        int attachment = GL_COLOR_ATTACHMENT0 + ci::math<int>::clamp( ( getMousePos().x - getWindowPos().x ) / (float) getWindowWidth() * 4, 0, 3 );
+        gl::ScopedTextureBind texBind( mFbo->getTexture( attachment ) );
         gl::ScopedGlslProg texShader( gl::getStockShader( gl::ShaderDef().color().texture() ) );
         gl::drawSolidRect( getWindowBounds() );
         
-        getWindow()->setTitle( "Fbo Attachment " + toString( att ) + " | Framerate: " + toString( (int) getAverageFps() ) );
+        getWindow()->setTitle( gl::constantToString( attachment ) + " | Framerate: " + toString( (int) getAverageFps() ) );
     }
     
 }
