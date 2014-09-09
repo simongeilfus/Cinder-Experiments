@@ -9,18 +9,16 @@ in vec3         gPosition;
 uniform mat4    ciModelViewProjection;
 uniform mat4    ciModelView;
 
-uniform vec3 uLightPosition;
+uniform vec3    uLightPosition;
 
+const vec3 diffuseColor     = vec3(1.0);
+const vec3 specularColor    = vec3(1.0);
 
 void main()
 {
     vec3 normal         = normalize(gFacetNormal);
-    
-    vec3 diffuse        = getDiffuse( normal, uLightPosition );
-    vec3 specular       = getSpecular( gPosition, normal, uLightPosition, vec3(1.0), vec3( 1.0 ), 3000.0 );
-    float attenuation   = getAttenuation( length( gPosition - uLightPosition ), 450.0f, 0.3f );
-    
-    vec3 color          = attenuation * ( diffuse + specular );
-    
-    oColor = color;
+    vec3 diffuse        = diffuseColor * getDiffuse( normal, uLightPosition );
+    vec3 specular       = specularColor * getSpecular( gPosition, normal, uLightPosition, 0.35f ) * 0.25f;
+    float attenuation   = getAttenuation( length( gPosition - uLightPosition ), 450.0f, 0.13f );
+    oColor              = attenuation * vec3( diffuse + specular );
 }

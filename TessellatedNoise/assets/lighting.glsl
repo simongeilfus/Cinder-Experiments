@@ -3,17 +3,13 @@ vec3 getDiffuse( vec3 normal, vec3 lightVector ){
     return vec3( max( dotProduct, 0.0 ) );
 }
 
-vec3 getSpecular( vec3 position, vec3 normal, vec3 lightVector, vec3 diffuse, vec3 specularColor, float shininess ){
-    vec3 specular;
-    vec3 halfVector = normalize( lightVector - normalize( position ) );
-    float dotNormalHalf = max( dot( normal, halfVector ), 0.0 );
-    
-    float specularNormalization = ( shininess + 2.0001 ) / 8.0;
-    
-    vec3 schlick = specularColor + vec3( 1.0 - specularColor ) * pow( 1.0 - dot( lightVector, halfVector ), 5.0 );
-    specular = schlick * max( pow( dotNormalHalf, shininess ), 0.0 ) * diffuse * specularNormalization * 0.25;
-    
-    return specular;
+
+float getSpecular( vec3 position, vec3 normal, vec3 lightVector, float gloss ){
+    vec3 halfVector             = normalize( lightVector - normalize( position ) );
+    float dotNormalHalf         = max( dot( normal, halfVector ), 0.0 );
+    float modifiedSpecularPower = exp2(10 * gloss + 1.528766);
+    float specularLighting      = (0.08664 * modifiedSpecularPower + 0.25) * exp2( modifiedSpecularPower * dotNormalHalf - modifiedSpecularPower);
+    return specularLighting;
 }
 
 float getAttenuation( float dist, float lightRadius, float cutoff ){

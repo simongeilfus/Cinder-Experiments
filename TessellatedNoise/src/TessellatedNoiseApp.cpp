@@ -115,7 +115,7 @@ void TessellatedNoise::setup()
     // Mayacam init and mouse inputs
     CameraPersp cam;
     cam.setPerspective( 60, getWindowAspectRatio(), 0.1, 100 );
-    cam.setEyePoint( vec3( 0, 0, -2.5f ) );
+    cam.setEyePoint( vec3( 0, 0, -5.0f ) );
     cam.setCenterOfInterestPoint( vec3( 0 ) );
     mMayaCam.setCurrentCam( cam );
     
@@ -138,12 +138,13 @@ void TessellatedNoise::draw()
     gl::setMatrices( mMayaCam.getCamera() );
     gl::viewport( getWindowSize() );
     
-    vec4 lightPosition = mMayaCam.getCamera().getViewMatrix() * ( angleAxis( (float) getElapsedSeconds() * 0.05f, vec3( 0.0f, 1.0f, 0.0f ) ) * vec4( 120.0f, 0.0f, 0.0f, 1.0 ) );
+    vec4 lightPosition = mMayaCam.getCamera().getViewMatrix() * ( angleAxis( /*(float) getElapsedSeconds() */ 0.05f, vec3( 0.0f, 1.0f, 0.0f ) ) * vec4( 120.0f, 0.0f, 0.0f, 1.0 ) );
     
     if( mShader ){
         gl::ScopedGlslProg shader( mShader );
         mShader->uniform( "uTessLevelInner", mInnerLevel );
         mShader->uniform( "uTessLevelOuter", mOuterLevel );
+        mShader->uniform( "uTime", (float) getElapsedSeconds() );
         mShader->uniform( "uLightPosition", vec3( lightPosition ) );
         
         auto ctx = gl::context();

@@ -1,2 +1,1 @@
-#include "/noise.glsl"
-#include "/lighting.glsl"
+#include </lighting.glsl>
