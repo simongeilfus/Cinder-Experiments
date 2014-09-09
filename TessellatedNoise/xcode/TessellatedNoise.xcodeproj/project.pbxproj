@@ -21,6 +21,9 @@
 		4B3E95F219BDC37200473EA5 /* shader.cont in Resources */ = {isa = PBXBuildFile; fileRef = 4B3E95F019BDC37200473EA5 /* shader.cont */; };
 		4B3E95F319BDC37200473EA5 /* shader.eval in Resources */ = {isa = PBXBuildFile; fileRef = 4B3E95F119BDC37200473EA5 /* shader.eval */; };
 		4B3E95F419BE520000473EA5 /* TessellatedNoiseApp.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 45DBB52CEFE64E1F845F083A /* TessellatedNoiseApp.cpp */; };
+		4B3E95F719BEEB8700473EA5 /* lighting.glsl in Resources */ = {isa = PBXBuildFile; fileRef = 4B3E95F519BEEB8700473EA5 /* lighting.glsl */; };
+		4B3E95F819BEEB8700473EA5 /* noise.glsl in Resources */ = {isa = PBXBuildFile; fileRef = 4B3E95F619BEEB8700473EA5 /* noise.glsl */; };
+		4B3E95FC19BEEE1600473EA5 /* nested.glsl in Resources */ = {isa = PBXBuildFile; fileRef = 4B3E95FB19BEEE1600473EA5 /* nested.glsl */; };
 		5323E6B20EAFCA74003A9687 /* CoreVideo.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5323E6B10EAFCA74003A9687 /* CoreVideo.framework */; };
 		5323E6B60EAFCA7E003A9687 /* QTKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5323E6B50EAFCA7E003A9687 /* QTKit.framework */; };
 		8D11072F0486CEB800E47090 /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1058C7A1FEA54F0111CA2CBB /* Cocoa.framework */; };
@@ -45,6 +48,9 @@
 		4B3E95DD19BDA14700473EA5 /* shader.vert */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.glsl; name = shader.vert; path = ../assets/shader.vert; sourceTree = "<group>"; };
 		4B3E95F019BDC37200473EA5 /* shader.cont */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = shader.cont; path = ../assets/shader.cont; sourceTree = "<group>"; };
 		4B3E95F119BDC37200473EA5 /* shader.eval */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.glsl; name = shader.eval; path = ../assets/shader.eval; sourceTree = "<group>"; };
+		4B3E95F519BEEB8700473EA5 /* lighting.glsl */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = lighting.glsl; path = ../assets/lighting.glsl; sourceTree = "<group>"; };
+		4B3E95F619BEEB8700473EA5 /* noise.glsl */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = noise.glsl; path = ../assets/noise.glsl; sourceTree = "<group>"; };
+		4B3E95FB19BEEE1600473EA5 /* nested.glsl */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = nested.glsl; path = ../assets/nested.glsl; sourceTree = "<group>"; };
 		5323E6B10EAFCA74003A9687 /* CoreVideo.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreVideo.framework; path = /System/Library/Frameworks/CoreVideo.framework; sourceTree = "<absolute>"; };
 		5323E6B50EAFCA7E003A9687 /* QTKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QTKit.framework; path = /System/Library/Frameworks/QTKit.framework; sourceTree = "<absolute>"; };
 		6280535471454633A07A7C22 /* TessellatedNoise_Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = TessellatedNoise_Prefix.pch; sourceTree = "<group>"; };
@@ -166,6 +172,9 @@
 		4B3E95D919BDA13F00473EA5 /* Shaders */ = {
 			isa = PBXGroup;
 			children = (
+				4B3E95FB19BEEE1600473EA5 /* nested.glsl */,
+				4B3E95F519BEEB8700473EA5 /* lighting.glsl */,
+				4B3E95F619BEEB8700473EA5 /* noise.glsl */,
 				4B3E95DD19BDA14700473EA5 /* shader.vert */,
 				4B3E95F019BDC37200473EA5 /* shader.cont */,
 				4B3E95F119BDC37200473EA5 /* shader.eval */,
@@ -227,12 +236,15 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				4B3E95F819BEEB8700473EA5 /* noise.glsl in Resources */,
 				4B3E95F319BDC37200473EA5 /* shader.eval in Resources */,
+				4B3E95F719BEEB8700473EA5 /* lighting.glsl in Resources */,
 				4B3E95DF19BDA14700473EA5 /* shader.geom in Resources */,
 				4B3E95DE19BDA14700473EA5 /* shader.frag in Resources */,
 				35413FAFA96849D79D1A1B3B /* CinderApp.icns in Resources */,
 				4B3E95E119BDA14700473EA5 /* shader.vert in Resources */,
 				4B3E95F219BDC37200473EA5 /* shader.cont in Resources */,
+				4B3E95FC19BEEE1600473EA5 /* nested.glsl in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

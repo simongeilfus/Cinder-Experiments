@@ -1,10 +1,11 @@
 #version 400
 
 layout(vertices = 3) out;
-in vec3 vPosition[];
-out vec3 tcPosition[];
-uniform float uTessLevelInner;
-uniform float uTessLevelOuter;
+in vec3         vPosition[];
+out vec3        tcPosition[];
+
+uniform float   uTessLevelInner;
+uniform float   uTessLevelOuter;
 
 #define ID gl_InvocationID
 

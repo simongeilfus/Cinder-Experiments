@@ -5,8 +5,6 @@
 #include "cinder/gl/Fbo.h"
 #include "cinder/gl/GlslProg.h"
 #include "cinder/gl/VboMesh.h"
-#include "cinder/gl/Shader.h"
-#include "cinder/gl/ConstantStrings.h"
 
 #include "cinder/GeomIo.h"
 #include "cinder/MayaCamUI.h"
@@ -37,9 +35,41 @@ public:
     MayaCamUI mMayaCam;
 };
 
+namespace cinder { namespace gl {
+    
+    void namedString( const std::string &name, const std::string &code )
+    {
+        glNamedStringARB( GL_SHADER_INCLUDE_ARB, name.length(), name.c_str(), code.length(), code.c_str() );
+    }
+    
+    void namedString( const std::string &name, const ci::DataSourceRef &source )
+    {
+        string code = loadString( source );
+        glNamedStringARB( GL_SHADER_INCLUDE_ARB, name.length(), name.c_str(), code.length(), code.c_str() );
+    }
+    
+    void namedString( const fs::path& filename )
+    {
+        try {
+            string code = loadString( loadAsset( filename ) );
+            string name = "/" + filename.string();
+            glNamedStringARB( GL_SHADER_INCLUDE_ARB, name.length(), name.c_str(), code.length(), code.c_str() );
+        }
+        catch( AssetLoadExc exc ){
+            cout << "Loading " << exc.what() << "Failed." << endl;
+        }
+    }
+    
+}}
+
 void TessellatedNoise::setup()
 {    
     getWindow()->setAlwaysOnTop();
+    
+    gl::namedString( "lighting.glsl" );
+    gl::namedString( "noise.glsl" );
+    gl::namedString( "nested.glsl" );
+    
     
     // create our test mesh
     mMesh = gl::VboMesh::create( geom::Icosphere().subdivisions( 4 ) );
