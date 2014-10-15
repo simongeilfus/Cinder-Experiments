@@ -173,8 +173,8 @@ void PhysicallyBasedShadingApp::draw()
 	
 	// render the light with a textured/billboarded quad
 	gl::ScopedGlslProg colorShaderScp( mColorShader );
-	gl::color( mLightColor + Color::white() * 0.85f );
-	gl::drawSphere( mLightPosition, mLightRadius * 0.25f, 32.0f );
+	gl::color( mLightColor + Color::white() * 0.5f );
+	gl::drawSphere( mLightPosition, mLightRadius * 0.15f, 32.0f );
 	
 	// render the ui
 	gl::disableDepthRead();
