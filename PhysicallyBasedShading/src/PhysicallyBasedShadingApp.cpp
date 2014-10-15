@@ -38,8 +38,7 @@ class PhysicallyBasedShadingApp : public AppNative {
 	vec3					mLightPosition;
 	MayaCamUI				mMayaCam;
 	gl::VboMeshRef			mSphere;
-	gl::GlslProgRef			mShader, mTextureShader;
-	gl::Texture2dRef		mLightTexture;
+	gl::GlslProgRef			mShader, mColorShader;
 	params::InterfaceGlRef	mParams;
 	
 	float					mRoughness;
@@ -74,9 +73,8 @@ void PhysicallyBasedShadingApp::setup()
 	}
 	catch( gl::GlslProgCompileExc exc ){ CI_LOG_E( exc.what() ); }
 	
-	// load the the light texture and create a shader for it
-	mTextureShader = gl::getStockShader( gl::ShaderDef().texture().color() );
-	mLightTexture = gl::Texture2d::create( loadImage( loadAsset( "light.png" ) ) );
+	// create a shader for rendering the light
+	mColorShader = gl::getStockShader( gl::ShaderDef().color() );
 	
 	// set the initial parameters and setup the ui
 	mRoughness			= 1.0f;
@@ -174,14 +172,9 @@ void PhysicallyBasedShadingApp::draw()
 	gl::popModelMatrix();
 	
 	// render the light with a textured/billboarded quad
-	gl::ScopedGlslProg texShaderScp( mTextureShader );
-	gl::ScopedAdditiveBlend blendScp;
-	gl::ScopedTextureBind textureScp( mLightTexture );
-	gl::ScopedColor colorScp( mLightColor + Color::white() * 0.85f );
-	
-	vec3 right, up;
-	mMayaCam.getCamera().getBillboardVectors( &right, &up );
-	gl::drawBillboard( mLightPosition, vec2( mLightRadius * 0.75f ), 0.0f, right, up );
+	gl::ScopedGlslProg colorShaderScp( mColorShader );
+	gl::color( mLightColor + Color::white() * 0.85f );
+	gl::drawSphere( mLightPosition, mLightRadius * 0.25f, 32.0f );
 	
 	// render the ui
 	gl::disableDepthRead();
