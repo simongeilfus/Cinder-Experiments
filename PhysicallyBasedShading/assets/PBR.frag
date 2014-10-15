@@ -6,9 +6,8 @@ uniform float		uRoughness;
 uniform float		uMetallic;
 
 in vec3             vNormal;
+in vec3             vLightPosition;
 in vec3             vPosition;
-in vec3             vViewSpaceLightPosition;
-in vec3             vViewSpacePosition;
 
 out vec4            oColor;
 
@@ -74,12 +73,10 @@ vec3 Uncharted2Tonemap( vec3 x )
 
 
 void main() {
-    vec3 positionToLight    = vPosition - uLightPosition;
-	
 	// get the normal, light, position and half vector normalized
 	vec3 N                  = normalize( vNormal );
-	vec3 L                  = normalize( vViewSpaceLightPosition - vViewSpacePosition );
-	vec3 V                  = normalize( -vViewSpacePosition );
+	vec3 L                  = normalize( vLightPosition - vPosition );
+	vec3 V                  = normalize( -vPosition );
 	vec3 H					= normalize(V + L);
 	
 	// get all the usefull dot products and clamp them between 0 and 1 just to be safe

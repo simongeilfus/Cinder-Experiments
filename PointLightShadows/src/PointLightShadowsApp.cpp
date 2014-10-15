@@ -19,6 +19,7 @@ class PointLightShadowsApp : public AppNative {
 	void setup() override;
 	void update() override;
 	void draw() override;
+	void resize() override;
 	
 	void mouseDown( MouseEvent event ) override;
 	void mouseDrag( MouseEvent event ) override;
@@ -93,8 +94,8 @@ void PointLightShadowsApp::setup()
 	// Create an fbo to store the depth of the scene from
 	// the point of view of a point light
 	gl::FboCubeMap::Format format;
-	format.textureCubeMapFormat( gl::TextureCubeMap::Format().internalFormat( GL_RGBA32F ).magFilter( GL_LINEAR ).minFilter( GL_LINEAR ).wrap( GL_CLAMP_TO_EDGE ).mipmap(false) );
-	mDepthMap = gl::FboCubeMap::create( 512, 512, format );
+	format.textureCubeMapFormat( gl::TextureCubeMap::Format().internalFormat( GL_R32F ) );
+	mDepthMap = gl::FboCubeMap::create( 1024, 1024, format );
 	
 	// Load and compile the shaders.
 	// Make sure they compile fine
@@ -128,8 +129,10 @@ void PointLightShadowsApp::draw()
 	
 	// Render the scene in LightSpace to the cubemap fbo
 	{
-		gl::ScopedViewport viewPortScp( ivec2( 0 ), ivec2( 512 ) );
+		gl::ScopedViewport viewPortScp( ivec2( 0 ), mDepthMap->getSize() );
 		gl::ScopedGlslProg shadingScp( mLightDepth );
+		
+		mLightDepth->uniform( "uLightPosition", mPointLight );
 		
 		gl::enableDepthRead();
 		gl::enableDepthWrite();
@@ -137,7 +140,8 @@ void PointLightShadowsApp::draw()
 		for( uint8_t dir = 0; dir < 6; ++dir ) {
 			// create and set the view and projection matrices
 			// from the point of view of the light
-			mat4 view, proj = glm::perspective( 90.0f, 1.0f, 1.0f, 1000.0f );
+			mat4 proj = glm::perspective( (float) M_PI * 0.5f, 1.0f, 1.0f, 1000.0f );
+			mat4 view;
 			switch ( GL_TEXTURE_CUBE_MAP_POSITIVE_X + dir ) {
 				case GL_TEXTURE_CUBE_MAP_POSITIVE_X:
 					view = glm::lookAt( mPointLight, mPointLight + glm::vec3( +1, +0, 0 ), glm::vec3( 0, -1, 0 ) );
@@ -222,4 +226,12 @@ void PointLightShadowsApp::mouseDrag( MouseEvent event )
 	mMayaCam.mouseDrag( event.getPos(), event.isLeftDown(), event.isMiddleDown(), event.isRightDown() );
 }
 
-CINDER_APP_NATIVE( PointLightShadowsApp, RendererGl )
+
+void PointLightShadowsApp::resize()
+{
+	auto cam = mMayaCam.getCamera();
+	cam.setAspectRatio( getWindowAspectRatio() );
+	mMayaCam.setCurrentCam( cam );
+
+}
+CINDER_APP_NATIVE( PointLightShadowsApp, RendererGl( RendererGl::Options().antiAliasing( RendererGl::AA_MSAA_16 ) ) )

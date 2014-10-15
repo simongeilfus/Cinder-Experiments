@@ -15,13 +15,14 @@ out vec3		vPosition;
 out vec3		vViewSpaceLightPosition;
 out vec3		vViewSpacePosition;
 
-
 void main(){
     vec4 worldSpacePosition	= ciModelMatrix * ciPosition;
     vec4 viewSpacePosition	= ciViewMatrix * worldSpacePosition;
+	
+	vViewSpaceLightPosition	= ( ciViewMatrix * vec4( uLightPosition, 1.0 ) ).xyz;
+	vViewSpacePosition 		= viewSpacePosition.xyz;
+	
     vPosition				= worldSpacePosition.xyz;
     vNormal					= ciNormalMatrix * ciNormal;
-    vViewSpaceLightPosition	= ( ciViewMatrix * vec4( uLightPosition, 1.0 ) ).xyz;
-    vViewSpacePosition 		= viewSpacePosition.xyz;
     gl_Position				= ciProjectionMatrix * viewSpacePosition;
 }

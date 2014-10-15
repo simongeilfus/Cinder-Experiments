@@ -18,6 +18,7 @@ class PhysicallyBasedShadingApp : public AppNative {
 	void setup() override;
 	void update() override;
 	void draw() override;
+	void resize() override;
 	
 	void mouseDown( MouseEvent event ) override;
 	void mouseDrag( MouseEvent event ) override;
@@ -30,6 +31,8 @@ class PhysicallyBasedShadingApp : public AppNative {
 
 void PhysicallyBasedShadingApp::setup()
 {
+	setWindowSize( 512, 512 );
+	
 	// Build our test model
 	mSphere = gl::VboMesh::create( geom::Sphere().subdivisions( 32 ) );
 	
@@ -72,9 +75,9 @@ void PhysicallyBasedShadingApp::draw()
 	int gridSize = 6;
 	
 	gl::pushModelMatrix();
-	for( int x = -gridSize; x < gridSize; x++ ){
-		for( int z = -gridSize; z < gridSize; z++ ){
-			float roughness = lmap( (float) z, (float) -gridSize, (float) gridSize, 0.01f, 1.0f );
+	for( int x = -gridSize; x <= gridSize; x++ ){
+		for( int z = -gridSize; z <= gridSize; z++ ){
+			float roughness = lmap( (float) z, (float) -gridSize, (float) gridSize, 0.05f, 1.0f );
 			float metallic	= lmap( (float) x, (float) -gridSize, (float) gridSize, 0.0f, 1.0f );
 			
 			mShader->uniform( "uRoughness", roughness );
@@ -99,5 +102,13 @@ void PhysicallyBasedShadingApp::mouseDrag( MouseEvent event )
 {
 	mMayaCam.mouseDrag( event.getPos(), event.isLeftDown(), event.isMiddleDown(), event.isRightDown() );
 }
+
+void PhysicallyBasedShadingApp::resize()
+{
+	auto cam = mMayaCam.getCamera();
+	cam.setAspectRatio( getWindowAspectRatio() );
+	mMayaCam.setCurrentCam( cam );
+}
+
 
 CINDER_APP_NATIVE( PhysicallyBasedShadingApp, RendererGl )
