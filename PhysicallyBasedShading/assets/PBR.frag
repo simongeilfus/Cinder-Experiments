@@ -1,9 +1,16 @@
 #version 150
 
 uniform vec3        uLightPosition;
+uniform vec3        uLightColor;
+uniform float       uLightRadius;
+
 uniform vec3		uBaseColor;
 uniform float		uRoughness;
 uniform float		uMetallic;
+uniform float		uSpecular;
+
+uniform float		uExposure;
+uniform float		uGamma;
 
 in vec3             vNormal;
 in vec3             vLightPosition;
@@ -64,6 +71,39 @@ vec3 Uncharted2Tonemap( vec3 x )
 	return ((x*(A*x+C*B)+D*E)/(x*(A*x+B)+D*F))-E/F;
 }
 
+// From "I'm doing it wrong"
+// http://imdoingitwrong.wordpress.com/2011/01/31/light-attenuation/
+float getAttenuation( vec3 lightPosition, vec3 vertexPosition, float lightRadius )
+{
+	float r				= lightRadius;
+	vec3 L				= lightPosition - vertexPosition;
+	float dist			= length(L);
+	float d				= max( dist - r, 0 );
+	L					/= dist;
+	float denom			= d / r + 1.0f;
+	float attenuation	= 1.0f / (denom*denom);
+	float cutoff		= 0.0052f;
+	attenuation			= (attenuation - cutoff) / (1 - cutoff);
+	attenuation			= max(attenuation, 0);
+	
+	return attenuation;
+}
+
+// https://www.shadertoy.com/view/4ssXRX
+//note: uniformly distributed, normalized rand, [0;1[
+float nrand( vec2 n )
+{
+	return fract(sin(dot(n.xy, vec2(12.9898, 78.233)))* 43758.5453);
+}
+float random( vec2 n, float seed )
+{
+	float t = fract( seed );
+	float nrnd0 = nrand( n + 0.07*t );
+	float nrnd1 = nrand( n + 0.11*t );
+	float nrnd2 = nrand( n + 0.13*t );
+	float nrnd3 = nrand( n + 0.17*t );
+	return (nrnd0+nrnd1+nrnd2+nrnd3) / 4.0;
+}
 
 void main() {
 	// get the normal, light, position and half vector normalized
@@ -79,7 +119,7 @@ void main() {
 	float NoH				= saturate( dot( N, H ) );
 	
 	// deduce the specular color from the baseColor and how metallic the material is
-	vec3 specularColor		= mix( vec3( 0.08 ), uBaseColor, uMetallic );
+	vec3 specularColor		= mix( vec3( 0.08 * uSpecular ), uBaseColor, uMetallic );
 	
 	// compute the brdf terms
 	float distribution		= getNormalDistribution( uRoughness, NoH );
@@ -89,22 +129,21 @@ void main() {
 	// get the specular and diffuse and combine them
 	vec3 diffuse			= getDiffuse( uBaseColor, uRoughness, NoV, NoL, VoH );
 	vec3 specular			= NoL * ( distribution * fresnel * geom );
-	vec3 color				= diffuse + specular;
+	vec3 color				= uLightColor * ( diffuse + specular );
 	
-	// fake some ambiant directional light with NoV
-	color					+= vec3( NoV ) * 0.01f;
+	// get the light attenuation from its radius
+	float attenuation		= getAttenuation( vLightPosition, vPosition, uLightRadius );
+	color					*= attenuation;
 	
 	// apply the tone-mapping
-	float exposure			= 3.0f;
-	color					= Uncharted2Tonemap( color * exposure);
+	color					= Uncharted2Tonemap( color * uExposure );
 	
 	// white balance
 	vec3 whiteScale			= 1.0f / Uncharted2Tonemap(vec3(W));
 	color					= color * whiteScale;
 	
 	// gamma correction
-	float gamma				= 2.2f;
-	color					= pow( color, vec3( 1.0f / gamma ) );
+	color					= pow( color, vec3( 1.0f / uGamma ) );
 	
 	// output the fragment color
     oColor                  = vec4( color, 1.0 );
