@@ -15,34 +15,27 @@ out vec4            oColor;
 #define PI 3.14159265359
 
 // OrenNayar diffuse
-vec3 getDiffuse( vec3 diffuseColor, float roughness, float NoV, float NoL, float VoH )
+vec3 getDiffuse( vec3 diffuseColor, float roughness4, float NoV, float NoL, float VoH )
 {
 	float VoL = 2 * VoH - 1;
-	float m = roughness * roughness;
-	float m2 = m * m;
-	float c1 = 1 - 0.5 * m2 / (m2 + 0.33);
+	float c1 = 1 - 0.5 * roughness4 / (roughness4 + 0.33);
 	float cosri = VoL - NoV * NoL;
-	float c2 = 0.45 * m2 / (m2 + 0.09) * cosri * ( cosri >= 0 ? min( 1, NoL / NoV ) : NoL );
+	float c2 = 0.45 * roughness4 / (roughness4 + 0.09) * cosri * ( cosri >= 0 ? min( 1, NoL / NoV ) : NoL );
 	return diffuseColor / PI * ( NoL * c1 + c2 );
 }
 
 // GGX Normal distribution
-float getNormalDistribution( float roughness, float NoH )
+float getNormalDistribution( float roughness4, float NoH )
 {
-	float m = roughness * roughness;
-	float m2 = m * m;
-	float d = ( NoH * m2 - NoH ) * NoH + 1;
-	return m2 / ( d*d );
+	float d = ( NoH * roughness4 - NoH ) * NoH + 1;
+	return roughness4 / ( d*d );
 }
 
 // Smith GGX geometric shadowing from "Physically-Based Shading at Disney"
-float getGeometricShadowing( float roughness, float NoV, float NoL, float VoH, vec3 L, vec3 V )
-{
-	float a = pow( roughness, 2 );
-	float a2 = a*a;
-	
-	float gSmithV = NoV + sqrt( NoV * (NoV - NoV * a2) + a2 );
-	float gSmithL = NoL + sqrt( NoL * (NoL - NoL * a2) + a2 );
+float getGeometricShadowing( float roughness4, float NoV, float NoL, float VoH, vec3 L, vec3 V )
+{	
+	float gSmithV = NoV + sqrt( NoV * (NoV - NoV * roughness4) + roughness4 );
+	float gSmithL = NoL + sqrt( NoL * (NoL - NoL * roughness4) + roughness4 );
 	return gSmithV * gSmithL;
 }
 
@@ -51,7 +44,7 @@ vec3 getFresnel( vec3 specularColor, float VoH )
 {
 	vec3 specularColorSqrt = sqrt( clamp( vec3(0, 0, 0), vec3(0.99, 0.99, 0.99), specularColor ) );
 	vec3 n = ( 1 + specularColorSqrt ) / ( 1 - specularColorSqrt );
-	vec3 g = sqrt( n*n + VoH*VoH - 1 );
+	vec3 g = sqrt( n * n + VoH * VoH - 1 );
 	return 0.5 * pow( (g - VoH) / (g + VoH), vec3(2.0) ) * ( 1 + pow( ((g+VoH)*VoH - 1) / ((g-VoH)*VoH + 1), vec3(2.0) ) );
 }
 

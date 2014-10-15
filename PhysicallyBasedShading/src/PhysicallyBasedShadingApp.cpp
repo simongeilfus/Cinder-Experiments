@@ -80,7 +80,7 @@ void PhysicallyBasedShadingApp::draw()
 			float roughness = lmap( (float) z, (float) -gridSize, (float) gridSize, 0.05f, 1.0f );
 			float metallic	= lmap( (float) x, (float) -gridSize, (float) gridSize, 0.0f, 1.0f );
 			
-			mShader->uniform( "uRoughness", roughness );
+			mShader->uniform( "uRoughness", pow( roughness, 4.0f ) );
 			mShader->uniform( "uMetallic", metallic );
 			
 			Color c( ColorModel::CM_HSV, vec3( 1.0f - roughness * metallic * 0.25f, 1.0f, 1.0f ) );
