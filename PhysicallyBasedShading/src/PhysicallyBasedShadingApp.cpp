@@ -204,11 +204,11 @@ void PhysicallyBasedShadingApp::draw()
 	mat4 view			= mMayaCam.getCamera().getViewMatrix();
 	mat4 proj			= mMayaCam.getCamera().getProjectionMatrix();
 	vec4 viewport		= vec4(0,0,getWindowSize());
-	vec3 center			= glm::project( vec3( gridSize * 3.0f, 0, -gridSize * 3.0f ), view, proj, viewport );
-	vec3 roughness		= glm::project( vec3( gridSize * 3.0f + 2.0f, 0, 0 ), view, proj, viewport );
-	vec3 roughnessEnd	= glm::project( vec3( gridSize * 3.0f, 0, gridSize * 3.0f ), view, proj, viewport );
-	vec3 metal			= glm::project( vec3( 0, 0, -gridSize * 3.0f - 2.0f ), view, proj, viewport );
-	vec3 metalEnd		= glm::project( vec3( -gridSize * 3.0f, 0, -gridSize * 3.0f ), view, proj, viewport );
+	vec3 center			= glm::project( vec3( gridSize * 3.0f, 2.0f, -gridSize * 3.0f ), view, proj, viewport );
+	vec3 roughness		= glm::project( vec3( gridSize * 3.0f + 2.0f, 2.0f, 0 ), view, proj, viewport );
+	vec3 roughnessEnd	= glm::project( vec3( gridSize * 3.0f, 1.0f, gridSize * 3.0f ), view, proj, viewport );
+	vec3 metal			= glm::project( vec3( 0, 2.0f, -gridSize * 3.0f - 2.0f ), view, proj, viewport );
+	vec3 metalEnd		= glm::project( vec3( -gridSize * 3.0f, 1.0f, -gridSize * 3.0f ), view, proj, viewport );
 	
 	gl::drawStringCentered( "0.0", vec2( center.x, getWindowHeight() - center.y ), ColorA( 1.0f, 1.0f, 1.0f, pitchFade ), mFont );
 	
@@ -221,7 +221,7 @@ void PhysicallyBasedShadingApp::draw()
 	gl::pushModelMatrix();
 	gl::translate( vec2( roughnessEnd.x, getWindowHeight() - roughnessEnd.y ) );
 	gl::rotate( angle + ( camAngles.y < 0.0f ? M_PI : 0.0f ) );
-	gl::drawStringCentered( to_string( mRoughness ), vec2( 0.0f ), ColorA( 1.0f, 1.0f, 1.0f, pitchFade ), mFont );
+	gl::drawStringCentered( to_string( mRoughness ).substr( 0, 3 ), vec2( 0.0f ), ColorA( 1.0f, 1.0f, 1.0f, pitchFade ), mFont );
 	gl::popModelMatrix();
 	
 	angle = atan2( ( getWindowHeight() - center.y ) - ( getWindowHeight() - metalEnd.y ), center.x - metalEnd.x );
@@ -233,7 +233,7 @@ void PhysicallyBasedShadingApp::draw()
 	gl::pushModelMatrix();
 	gl::translate( vec2( metalEnd.x, getWindowHeight() - metalEnd.y ) );
 	gl::rotate( angle + ( abs( angle ) < M_PI_2 ? 0.0f : M_PI ) );
-	gl::drawStringCentered( to_string( mMetallic ), vec2( 0.0f ), ColorA( 1.0f, 1.0f, 1.0f, pitchFade ), mFont );
+	gl::drawStringCentered( to_string( mMetallic ).substr( 0, 3 ), vec2( 0.0f ), ColorA( 1.0f, 1.0f, 1.0f, pitchFade ), mFont );
 	gl::popModelMatrix();
 	
 	mParams->draw();
