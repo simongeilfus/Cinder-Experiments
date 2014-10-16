@@ -55,6 +55,8 @@ class PhysicallyBasedShadingApp : public AppNative {
 	int						mFocalLengthPreset, mSensorSizePreset, mFStopPreset;
 	int						mPrevFocalLengthPreset, mPrevSensorSizePreset, mPrevFStopPreset;
 	float					mGamma;
+	
+	Font					mFont;
 };
 
 void PhysicallyBasedShadingApp::setup()
@@ -65,6 +67,8 @@ void PhysicallyBasedShadingApp::setup()
 	// prepare the Camera ui
 	auto cam = CameraPersp();
 	cam.setPerspective( 50.0f, getWindowAspectRatio(), 1.0f, 1000.0f );
+	cam.setEyePoint( vec3( -37.653, 40.849, -0.187 ) );
+	cam.setOrientation( quat( -0.643, 0.298, 0.640, 0.297 ) );
 	mMayaCam.setCurrentCam( cam );
 	
 	// load and compile the shader and make sure they compile fine
@@ -94,6 +98,12 @@ void PhysicallyBasedShadingApp::setup()
 	mFStopPreset		= mPrevFStopPreset = 2;
 	
 	setupParams();
+	
+#if defined( CINDER_MSW )
+	mFont = Font( "Arial Bold", 12 );
+#else
+	mFont = Font( "Arial-BoldMT", 12 );
+#endif
 }
 
 void PhysicallyBasedShadingApp::update()
@@ -160,7 +170,7 @@ void PhysicallyBasedShadingApp::draw()
 	for( int x = -gridSize; x <= gridSize; x++ ){
 		for( int z = -gridSize; z <= gridSize; z++ ){
 			float roughness = lmap( (float) z, (float) -gridSize, (float) gridSize, 0.05f, 1.0f );
-			float metallic	= lmap( (float) x, (float) -gridSize, (float) gridSize, 0.0f, 1.0f );
+			float metallic	= lmap( (float) x, (float) -gridSize, (float) gridSize, 1.0f, 0.0f );
 			
 			mShader->uniform( "uRoughness", pow( roughness * mRoughness, 4.0f ) );
 			mShader->uniform( "uMetallic", metallic * mMetallic );
@@ -176,9 +186,56 @@ void PhysicallyBasedShadingApp::draw()
 	gl::color( mLightColor + Color::white() * 0.5f );
 	gl::drawSphere( mLightPosition, mLightRadius * 0.15f, 32.0f );
 	
-	// render the ui
+	// render the metal/roughness axis
+	// fade the color when the camera is low
+	gl::ScopedAlphaBlend blendScp( false );
+	vec3 camAngles = glm::eulerAngles( mMayaCam.getCamera().getOrientation() );
+	float pitch = camAngles.x;
+	float pitchFade = ( 1.0f - abs( cos( pitch ) ) ) * 0.5f;
+	gl::color( ColorA( 1.0f, 1.0f, 1.0f, pitchFade ) );
+	gl::drawVector( vec3( gridSize * 2.25f, 0, -gridSize * 3.0f ) , vec3( -gridSize * 2.25f, 0, -gridSize * 3.0f ), 0.8f, 0.2f );
+	gl::drawVector( vec3( gridSize * 3.0f, 0, -gridSize * 2.25f ) , vec3( gridSize * 3.0f, 0, gridSize * 2.25f ), 0.8f, 0.2f );
+	
+	// render the ui and annotations
 	gl::disableDepthRead();
 	gl::setMatricesWindow( getWindowSize() );
+	
+	// project text positions
+	mat4 view			= mMayaCam.getCamera().getViewMatrix();
+	mat4 proj			= mMayaCam.getCamera().getProjectionMatrix();
+	vec4 viewport		= vec4(0,0,getWindowSize());
+	vec3 center			= glm::project( vec3( gridSize * 3.0f, 0, -gridSize * 3.0f ), view, proj, viewport );
+	vec3 roughness		= glm::project( vec3( gridSize * 3.0f + 2.0f, 0, 0 ), view, proj, viewport );
+	vec3 roughnessEnd	= glm::project( vec3( gridSize * 3.0f, 0, gridSize * 3.0f ), view, proj, viewport );
+	vec3 metal			= glm::project( vec3( 0, 0, -gridSize * 3.0f - 2.0f ), view, proj, viewport );
+	vec3 metalEnd		= glm::project( vec3( -gridSize * 3.0f, 0, -gridSize * 3.0f ), view, proj, viewport );
+	
+	gl::drawStringCentered( "0.0", vec2( center.x, getWindowHeight() - center.y ), ColorA( 1.0f, 1.0f, 1.0f, pitchFade ), mFont );
+	
+	float angle = atan2( ( getWindowHeight() - center.y ) - ( getWindowHeight() - roughnessEnd.y ), center.x - roughnessEnd.x );
+	gl::pushModelMatrix();
+	gl::translate( vec2( roughness.x, getWindowHeight() - roughness.y ) );
+	gl::rotate( angle + ( camAngles.y < 0.0f ? M_PI : 0.0f ) );
+	gl::drawStringCentered( "Roughness", vec2( 0.0f ), ColorA( 1.0f, 1.0f, 1.0f, pitchFade ), mFont );
+	gl::popModelMatrix();
+	gl::pushModelMatrix();
+	gl::translate( vec2( roughnessEnd.x, getWindowHeight() - roughnessEnd.y ) );
+	gl::rotate( angle + ( camAngles.y < 0.0f ? M_PI : 0.0f ) );
+	gl::drawStringCentered( to_string( mRoughness ), vec2( 0.0f ), ColorA( 1.0f, 1.0f, 1.0f, pitchFade ), mFont );
+	gl::popModelMatrix();
+	
+	angle = atan2( ( getWindowHeight() - center.y ) - ( getWindowHeight() - metalEnd.y ), center.x - metalEnd.x );
+	gl::pushModelMatrix();
+	gl::translate( vec2( metal.x, getWindowHeight() - metal.y - 10.0f ) );
+	gl::rotate( angle + ( abs( angle ) < M_PI_2 ? 0.0f : M_PI ) );
+	gl::drawStringCentered( "Metal", vec2( 0.0f ), ColorA( 1.0f, 1.0f, 1.0f, pitchFade ), mFont );
+	gl::popModelMatrix();
+	gl::pushModelMatrix();
+	gl::translate( vec2( metalEnd.x, getWindowHeight() - metalEnd.y ) );
+	gl::rotate( angle + ( abs( angle ) < M_PI_2 ? 0.0f : M_PI ) );
+	gl::drawStringCentered( to_string( mMetallic ), vec2( 0.0f ), ColorA( 1.0f, 1.0f, 1.0f, pitchFade ), mFont );
+	gl::popModelMatrix();
+	
 	mParams->draw();
 }
 
