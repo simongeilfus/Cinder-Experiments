@@ -43,7 +43,7 @@ float getGeometricShadowing( float roughness4, float NoV, float NoL, float VoH, 
 {	
 	float gSmithV = NoV + sqrt( NoV * (NoV - NoV * roughness4) + roughness4 );
 	float gSmithL = NoL + sqrt( NoL * (NoL - NoL * roughness4) + roughness4 );
-	return gSmithV * gSmithL;
+	return 1.0 / ( gSmithV * gSmithL );
 }
 
 // Fresnel term

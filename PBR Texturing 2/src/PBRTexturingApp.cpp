@@ -192,7 +192,7 @@ void PBRTexturingApp::draw()
 		mShader->uniform( "uLightRadiuses", &mLightRadiuses[0], mLightPositions.size() );
 		mShader->uniform( "uBaseColor", mBaseColor );
 		mShader->uniform( "uSpecular", mSpecular );
-		mShader->uniform( "uRoughness", mRoughness );
+		mShader->uniform( "uRoughness", pow( mRoughness, 4.0f ) );
 		mShader->uniform( "uMetallic", mMetallic );
 		mShader->uniform( "uDetails", mNormalDetails );
 		mShader->uniform( "uExposure", lmap( mFocalLength / mFStop, 0.0f, 144.0f, 0.1f, 50.0f ) );

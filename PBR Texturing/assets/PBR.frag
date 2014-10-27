@@ -49,7 +49,7 @@ float getGeometricShadowing( float roughness4, float NoV, float NoL, float VoH, 
 {	
 	float gSmithV = NoV + sqrt( NoV * (NoV - NoV * roughness4) + roughness4 );
 	float gSmithL = NoL + sqrt( NoL * (NoL - NoL * roughness4) + roughness4 );
-	return gSmithV * gSmithL;
+	return 1.0 / ( gSmithV * gSmithL );
 }
 
 // Fresnel term
@@ -156,7 +156,7 @@ void main() {
 		float NoH			= saturate( dot( N, H ) );
 		
 		// deduce the specular color from the baseColor and how metallic the material is
-		vec3 specularColor	= mix( vec3( 0.02 * uSpecular ), baseColor, metallic );
+		vec3 specularColor	= mix( vec3( 0.08 * uSpecular ), baseColor, metallic );
 		
 		// compute the brdf terms
 		float distribution	= getNormalDistribution( roughness, NoH );

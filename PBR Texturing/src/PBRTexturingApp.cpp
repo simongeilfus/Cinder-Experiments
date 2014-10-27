@@ -102,7 +102,7 @@ void PBRTexturingApp::setup()
 	// set the initial parameters and setup the ui
 	mRoughness			= 1.0f;
 	mMetallic			= 0.0f;
-	mSpecular			= 0.175f;
+	mSpecular			= 0.5f;
 	mNormalDetails		= 1.0f;
 	mLightRadiuses		= { 2.5f, 2.7f };
 	mLightBRadius		= 2.0f;
@@ -186,7 +186,7 @@ void PBRTexturingApp::draw()
 		mShader->uniform( "uLightRadiuses", &mLightRadiuses[0], mLightPositions.size() );
 		mShader->uniform( "uBaseColor", mBaseColor );
 		mShader->uniform( "uSpecular", mSpecular );
-		mShader->uniform( "uRoughness", mRoughness );
+		mShader->uniform( "uRoughness", pow( mRoughness, 4.0f ) );
 		mShader->uniform( "uMetallic", mMetallic );
 		mShader->uniform( "uDetails", mNormalDetails );
 		mShader->uniform( "uExposure", lmap( mFocalLength / mFStop, 0.0f, 144.0f, 0.1f, 50.0f ) );
