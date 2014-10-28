@@ -193,7 +193,7 @@ vec3 SpecularIBL( vec3 SpecularColor, float Roughness, vec3 N, vec3 V, ivec2 ran
 }
 
 
-vec3 PrefilterEnvMap(float roughness, vec3 R, ivec2 rand )
+vec3 PrefilterEnvMap( ivec2 rand, float roughness, vec3 R )
 {
 	vec3 N = R;
 	vec3 V = R;
@@ -201,7 +201,7 @@ vec3 PrefilterEnvMap(float roughness, vec3 R, ivec2 rand )
 	vec3 prefilteredColor = vec3(0);
 	float  totalWeight      = 0;
 	
-	const int numSamples = 32;//8192*8;
+	const int numSamples = 16;//8192*8;
 	for(int i=0; i<numSamples; ++i)
 	{
 		vec2 xi  = Hammersley(i, numSamples,rand);
@@ -210,7 +210,7 @@ vec3 PrefilterEnvMap(float roughness, vec3 R, ivec2 rand )
 		float  NoL = saturate(dot(N, L));
 		if(NoL>0)
 		{
-			float lod	= 6.0;
+			float lod	= 0.0;
 			vec3 lookup = fix_cube_lookup( L, 128, lod );
 			prefilteredColor += texture( uCubeMapTex, lookup, lod ).xyz * NoL;
 			totalWeight += NoL;
@@ -219,6 +219,91 @@ vec3 PrefilterEnvMap(float roughness, vec3 R, ivec2 rand )
 	
 	return prefilteredColor / totalWeight;
 }
+
+
+vec2 IntegrateBRDF( ivec2 Random, float Roughness, float NoV )
+{
+	vec3 V;
+	V.x = sqrt( 1.0f - NoV * NoV );	// sin
+	V.y = 0;
+	V.z = NoV;						// cos
+	
+	float A = 0;
+	float B = 0;
+	
+	const int NumSamples = 16;
+	for( int i = 0; i < NumSamples; i++ )
+	{
+		vec2 E = Hammersley( i, NumSamples, Random );
+		vec3 H = ImportanceSampleGGX( E, Roughness, vec3(0,0,1) );
+		vec3 L = 2 * dot( V, H ) * H - V;
+		
+		float NoL = saturate( L.z );
+		float NoH = saturate( H.z );
+		float VoH = saturate( dot( V, H ) );
+		
+		if( NoL > 0 )
+		{
+			float G = G_Smith( Roughness, NoV, NoL );
+			//float G_Vis = G * VoH / (NoH * NoV);
+			float G_Vis = 4 * G * VoH * (NoL / NoH);
+			
+			float Fc = pow( 1 - VoH, 5 );
+			A += (1 - Fc) * G_Vis;
+			B += Fc * G_Vis;
+		}
+	}
+	
+	return vec2( A, B ) / NumSamples;
+}
+
+vec3 ApproximateSpecularIBL( ivec2 Random, vec3 SpecularColor, float Roughness, vec3 N, vec3 V )
+{
+	// Function replaced with prefiltered environment map sample
+	vec3 R = 2 * dot( V, N ) * N - V;
+	vec3 PrefilteredColor = PrefilterEnvMap( Random, Roughness, R );
+	//vec3 PrefilteredColor = FilterEnvMap( Random, Roughness, N, V );
+	
+	// Function replaced with 2D texture sample
+	float NoV = saturate( dot( N, V ) );
+	vec2 AB = IntegrateBRDF( Random, Roughness, NoV );
+	
+	return PrefilteredColor * ( SpecularColor * AB.x + AB.y );
+}
+
+vec4 CosineSampleHemisphere( vec2 E )
+{
+	float Phi = 2 * PI * E.x;
+	float CosTheta = sqrt( E.y );
+	float SinTheta = sqrt( 1 - CosTheta * CosTheta );
+	vec3 H;
+	H.x = SinTheta * cos( Phi );
+	H.y = SinTheta * sin( Phi );
+	H.z = CosTheta;
+	float PDF = CosTheta / PI;
+	return vec4( H, PDF );
+}
+
+vec3 DiffuseIBL( ivec2 Random, vec3 DiffuseColor, vec3 N )
+{
+	vec3 DiffuseLighting = vec3(0);
+	const int NumSamples = 16;
+	for( int i = 0; i < NumSamples; i++ )
+	{
+		vec2 E = Hammersley( i, NumSamples, Random );
+		vec3 L = CosineSampleHemisphere( E ).xyz;
+		float NoL = saturate( dot( N, L ) );
+		if( NoL > 0 )
+		{
+			vec3 SampleColor = texture( uCubeMapTex, L, 0 ).rgb;
+			// lambert = DiffuseColor * NoL / PI
+			// pdf = NoL / PI
+			DiffuseLighting += SampleColor * DiffuseColor;
+		}
+	}
+	return DiffuseLighting / NumSamples;
+}
+
 
 vec3 hash( vec3 p )
 {
@@ -244,6 +329,17 @@ float noise( in vec3 p )
 						dot( hash( i + vec3(1.0,0.0,1.0) ), f - vec3(1.0,0.0,1.0) ), u.x),
 				   mix( dot( hash( i + vec3(0.0,1.0,1.0) ), f - vec3(0.0,1.0,1.0) ),
 					   dot( hash( i + vec3(1.0,1.0,1.0) ), f - vec3(1.0,1.0,1.0) ), u.x), u.y), u.z );
+}
+
+// https://www.unrealengine.com/blog/physically-based-shading-on-mobile
+vec3 EnvBRDFApprox( vec3 SpecularColor, float Roughness, float NoV )
+{
+	const vec4 c0 = vec4( -1, -0.0275, -0.572, 0.022 );
+	const vec4 c1 = vec4( 1, 0.0425, 1.04, -0.04 );
+	vec4 r = Roughness * c0 + c1;
+	float a004 = min( r.x * r.x, exp2( -9.28 * NoV ) ) * r.x + r.y;
+	vec2 AB = vec2( -1.04, 1.04 ) * a004 + r.zw;
+	return SpecularColor * AB.x + AB.y;
 }
 
 void main() {
@@ -290,9 +386,15 @@ void main() {
 	
 	ivec2 rand				= ivec2( ( 1.0 + random( wsNormal.xz ) ) * 8192.0 * 4.0 );
 	vec3 specularIBL		= SpecularIBL( specularColor, uRoughness, wsNormal, vEyePosition, rand );
+//	specularIBL				= ApproximateSpecularIBL( rand, specularColor, uRoughness, wsNormal, vEyePosition );
 	//vec3 diffuseIBL			= PrefilterEnvMap( 1.0, wsNormal, rand );//textureLod( uCubeMapTex, fix_cube_lookup( normalize(vWsNormal), 512.0f, lod ), lod ).rgb;
+	//vec3 diffuseIBL			= DiffuseIBL( rand, uBaseColor, wsNormal );
+	//vec3 diffuseIBL			= DiffuseIBL2( uBaseColor, uRoughness, wsNormal, vEyePosition, rand );
 	//color					= mix( diffuseIBL, specularIBL, sqrt(sqrt(1.0-uRoughness)) );
 	color					= ( specularIBL ) * saturate( dot( wsNormal, vEyePosition ) );
+	//vec3 approx = EnvBRDFApprox( specularColor, uRoughness, dot( wsNormal, vEyePosition ) );
+	//color					*= diffuseIBL;
+	//color = approx;
 	//color = pow( color, vec3( 1.5 ) );
 	
 

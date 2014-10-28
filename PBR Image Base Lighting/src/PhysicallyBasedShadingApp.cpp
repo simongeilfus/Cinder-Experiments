@@ -6,6 +6,7 @@
 #include "cinder/gl/GlslProg.h"
 #include "cinder/gl/Fbo.h"
 #include "cinder/gl/Shader.h"
+#include "cinder/gl/Query.h"
 
 #include "cinder/MayaCamUI.h"
 #include "cinder/Log.h"
@@ -44,6 +45,8 @@ class PhysicallyBasedShadingApp : public AppNative {
 	
 	gl::VboMeshRef			mModel;
 	gl::VboMeshRef			mSkyBox;
+	
+	gl::QueryTimeSwappedRef	mTimer;
 	
 	float					mRoughness;
 	float					mMetallic;
@@ -107,6 +110,7 @@ void PhysicallyBasedShadingApp::setup()
 	}
 	catch( gl::GlslProgCompileExc exc ){ CI_LOG_E( exc.what() ); }
 	
+	mTimer = gl::QueryTimeSwapped::create();
 	
 	// create a shader for rendering the light
 	mColorShader = gl::getStockShader( gl::ShaderDef().color() );
@@ -165,11 +169,13 @@ void PhysicallyBasedShadingApp::update()
 		mMayaCam.setCurrentCam( cam );
 	}
 	
-	getWindow()->setTitle( "Fps: " + to_string( (int) getAverageFps() ) );
+	getWindow()->setTitle( "Fps: " + to_string( (int) getAverageFps() ) + " / " + to_string( mTimer->getElapsedMilliseconds() ) + "ms" );
 }
 
 void PhysicallyBasedShadingApp::draw()
 {
+	mTimer->begin();
+	
 	gl::clear( Color( 0, 0, 0 ) );
 	
 	// set matrices
@@ -225,7 +231,7 @@ void PhysicallyBasedShadingApp::draw()
 	}
 	
 	
-	
+	mTimer->end();
 	
 	/*// render the light
 	gl::ScopedGlslProg colorShaderScp( mColorShader );

@@ -85,8 +85,8 @@ void PhysicallyBasedShadingApp::setup()
 	mMetallic			= 1.0f;
 	mSpecular			= 1.0f;
 	mLightRadius		= 4.0f;
-	mLightColor			= Color( 1.0f, 0.025f, 0.9f );
-	mBaseColor			= Color( 1.0f, 0.8f, 0.025f );
+	mLightColor			= Color::white();
+	mBaseColor			= Color( 1.0f, 0.0f, 0.0f );
 	mTime				= 0.0f;
 	mAnimateLight		= true;
 	mFStop				= 2.0f;
@@ -181,7 +181,7 @@ void PhysicallyBasedShadingApp::draw()
 	}
 	gl::popModelMatrix();
 	
-	// render the light with a textured/billboarded quad
+	// render the light
 	gl::ScopedGlslProg colorShaderScp( mColorShader );
 	gl::color( mLightColor + Color::white() * 0.5f );
 	gl::drawSphere( mLightPosition, mLightRadius * 0.15f, 32.0f );

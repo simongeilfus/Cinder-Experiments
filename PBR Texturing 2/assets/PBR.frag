@@ -143,9 +143,13 @@ void main() {
 	vec3 color				= vec3( 0.0 );
 	
 	vec3 baseColor			= texture( uBaseColorMap, uv ).rgb * uBaseColor;
-	float roughness			= saturate( pow( texture( uRoughnessMap, uv ).x * uRoughness, 4 ) );
+	float roughness			= saturate( pow( texture( uRoughnessMap, uv ).x, 4 ) * uRoughness );
 	float metallic			= saturate( texture( uMetallicMap, uv ).x * uMetallic );
 	//float ao				= pow( texture( uAoMap, uv ).x, 2.0 );
+	//
+	vec3 diffuseColor		= baseColor - baseColor * metallic;
+	// deduce the specular color from the baseColor and how metallic the material is
+	vec3 specularColor	= mix( vec3( 0.08 * uSpecular ), baseColor, metallic );
 	
 	
 	for( int i = 0; i < 2; i++ ){
@@ -159,16 +163,13 @@ void main() {
 		float VoH			= saturate( dot( V, H ) );
 		float NoH			= saturate( dot( N, H ) );
 		
-		// deduce the specular color from the baseColor and how metallic the material is
-		vec3 specularColor	= mix( vec3( 0.08 * uSpecular ), baseColor, metallic );
-		
 		// compute the brdf terms
 		float distribution	= getNormalDistribution( roughness, NoH );
 		vec3 fresnel		= getFresnel( specularColor, VoH );
 		float geom			= getGeometricShadowing( roughness, NoV, NoL, VoH, L, V );
 		
 		// get the specular and diffuse and combine them
-		vec3 diffuse		= getDiffuse( baseColor, roughness, NoV, NoL, VoH );
+		vec3 diffuse		= getDiffuse( diffuseColor, roughness, NoV, NoL, VoH );
 		vec3 specular		= NoL * ( distribution * fresnel * geom );
 		vec3 directLighting	= uLightColors[i] * ( diffuse + specular );
 		

@@ -117,6 +117,9 @@ void main() {
 	float VoH				= saturate( dot( V, H ) );
 	float NoH				= saturate( dot( N, H ) );
 	
+	//
+	vec3 diffuseColor		= uBaseColor - uBaseColor * uMetallic;
+	
 	// deduce the specular color from the baseColor and how metallic the material is
 	vec3 specularColor		= mix( vec3( 0.08 * uSpecular ), uBaseColor, uMetallic );
 	
@@ -126,7 +129,7 @@ void main() {
 	float geom				= getGeometricShadowing( uRoughness, NoV, NoL, VoH, L, V );
 
 	// get the specular and diffuse and combine them
-	vec3 diffuse			= getDiffuse( uBaseColor, uRoughness, NoV, NoL, VoH );
+	vec3 diffuse			= getDiffuse( diffuseColor, uRoughness, NoV, NoL, VoH );
 	vec3 specular			= NoL * ( distribution * fresnel * geom );
 	vec3 color				= uLightColor * ( diffuse + specular );
 	
