@@ -38,7 +38,6 @@ class PhysicallyBasedShadingApp : public AppNative {
 	
 	void setupParams();
 	
-	vec3					mLightPosition;
 	MayaCamUI				mMayaCam;
 	gl::GlslProgRef			mShader, mColorShader, mSkyBoxShader;
 	params::InterfaceGlRef	mParams;
@@ -53,9 +52,7 @@ class PhysicallyBasedShadingApp : public AppNative {
 	
 	gl::TextureCubeMapRef	mCubeMap;
 	
-	bool					mAnimateLight;
-	float					mLightRadius;
-	Color					mLightColor;
+	bool					mRotateModel;
 	float					mTime;
 	
 	float					mFocalLength, mSensorSize, mFStop;
@@ -118,11 +115,9 @@ void PhysicallyBasedShadingApp::setup()
 	mRoughness			= 1.0f;
 	mMetallic			= 1.0f;
 	mSpecular			= 1.0f;
-	mLightRadius		= 2.0f;
-	mLightColor			= Color::white();//( 1.0f, 0.025f, 0.9f );
 	mBaseColor			= Color::white();//( 1.0f, 0.8f, 0.025f );
 	mTime				= 0.0f;
-	mAnimateLight		= true;
+	mRotateModel		= false;
 	mFStop				= 2.0f;
 	mGamma				= 2.2f;
 	mFocalLength		= 36.0f;
@@ -142,9 +137,7 @@ void PhysicallyBasedShadingApp::setup()
 
 void PhysicallyBasedShadingApp::update()
 {
-	// animate the light
-	if( mAnimateLight ){
-		mLightPosition = vec3( cos( mTime * 0.5f ) * 8.0f, 8.0f + sin( mTime * 0.25f ) * 3.5f, sin( mTime * 0.5f ) * 8.0f );
+	if( mRotateModel ){
 		mTime += 0.025f;
 	}
 	
@@ -171,6 +164,8 @@ void PhysicallyBasedShadingApp::update()
 		cam.setFov( fov );
 		mMayaCam.setCurrentCam( cam );
 	}
+	
+	getWindow()->setTitle( "Fps: " + to_string( (int) getAverageFps() ) );
 }
 
 void PhysicallyBasedShadingApp::draw()
@@ -191,9 +186,6 @@ void PhysicallyBasedShadingApp::draw()
 		
 		// sends the base color, the specular opacity,
 		// the light position, color and radius to the shader
-		mShader->uniform( "uLightPosition", mLightPosition );
-		mShader->uniform( "uLightColor", mLightColor );
-		mShader->uniform( "uLightRadius", mLightRadius );
 		mShader->uniform( "uBaseColor", mBaseColor );
 		mShader->uniform( "uSpecular", mSpecular );
 		
@@ -214,7 +206,7 @@ void PhysicallyBasedShadingApp::draw()
 				mShader->uniform( "uRoughness", 0.0001f + pow( roughness * mRoughness, 4.0f ) );
 				mShader->uniform( "uMetallic", metallic * mMetallic );
 				
-				gl::setModelMatrix( glm::translate( vec3( x, 0, z ) * 2.5f ) );
+				gl::setModelMatrix( glm::translate( vec3( x, 0, z ) * 2.5f ) * glm::rotate( mTime, vec3( 0.123, 0.456, 0.789 ) ) );
 				gl::draw( mModel );
 			}
 		}
@@ -296,10 +288,8 @@ void PhysicallyBasedShadingApp::setupParams()
 	mParams->addParam( "Base Color", &mBaseColor );
 	
 	mParams->addSeparator();
-	mParams->addText( "Light" );
-	mParams->addParam( "Animation", &mAnimateLight );
-	mParams->addParam( "Radius", &mLightRadius ).min( 0.0f ).max( 20.0f ).step( 0.1f );
-	mParams->addParam( "Color", &mLightColor );
+	mParams->addText( "Animation" );
+	mParams->addParam( "Rotate Model", &mRotateModel );
 	
 	mParams->addSeparator();
 	mParams->addText( "Camera" );

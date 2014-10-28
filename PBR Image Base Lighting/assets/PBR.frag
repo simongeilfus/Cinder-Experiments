@@ -2,10 +2,6 @@
 
 uniform samplerCube uCubeMapTex;
 
-uniform vec3        uLightPosition;
-uniform vec3        uLightColor;
-uniform float       uLightRadius;
-
 uniform vec3		uBaseColor;
 uniform float		uRoughness;
 uniform float		uMetallic;
@@ -15,10 +11,10 @@ uniform float		uExposure;
 uniform float		uGamma;
 
 in vec3             vNormal;
-in vec3             vLightPosition;
 in vec3             vPosition;
 in vec3				vEyePosition;
 in vec3				vWsNormal;
+in vec3				vWsPosition;
 
 out vec4            oColor;
 
@@ -92,33 +88,29 @@ float getAttenuation( vec3 lightPosition, vec3 vertexPosition, float lightRadius
 	return attenuation;
 }
 
-// https://www.shadertoy.com/view/4ssXRX
-//note: uniformly distributed, normalized rand, [0;1[
-float nrand( vec2 n )
+
+float hash( vec2 p )
 {
-	return fract(sin(dot(n.xy, vec2(12.9898, 78.233)))* 43758.5453);
-}
-float random( vec2 n, float seed )
-{
-	float t = fract( seed );
-	float nrnd0 = nrand( n + 0.07*t );
-	float nrnd1 = nrand( n + 0.11*t );
-	float nrnd2 = nrand( n + 0.13*t );
-	float nrnd3 = nrand( n + 0.17*t );
-	return (nrnd0+nrnd1+nrnd2+nrnd3) / 4.0;
+	float h = dot(p,vec2(127.1,311.7));
+	return -1.0 + 2.0*fract(sin(h)*43758.5453123);
 }
 
+vec2 random( vec2 p )
+{
+	return vec2( hash( p.xy ), hash( p.yx ) );
+}
 
 // Interesting page on Hammersley Points
 // http://holger.dammertz.org/stuff/notes_HammersleyOnHemisphere.html#
-vec2 Hammersley(const in int index, const in int numSamples){
+vec2 Hammersley(const in int index, const in int numSamples, ivec2 rand ){
 	int reversedIndex = index;
 	reversedIndex = (reversedIndex << 16) | (reversedIndex >> 16);
 	reversedIndex = ((reversedIndex & 0x00ff00ff) << 8) | ((reversedIndex & 0xff00ff00) >> 8);
 	reversedIndex = ((reversedIndex & 0x0f0f0f0f) << 4) | ((reversedIndex & 0xf0f0f0f0) >> 4);
 	reversedIndex = ((reversedIndex & 0x33333333) << 2) | ((reversedIndex & 0xcccccccc) >> 2);
 	reversedIndex = ((reversedIndex & 0x55555555) << 1) | ((reversedIndex & 0xaaaaaaaa) >> 1);
-	return vec2(fract(float(index) / numSamples), float(reversedIndex) * 2.3283064365386963e-10);
+	
+	return vec2(fract(float(index) / numSamples + float( rand.x & 0xffff ) / (1<<16) ), float(reversedIndex ^ rand.y ) * 2.3283064365386963e-10);
 }
 
 // straight from Epic paper for Siggraph 2013 Shading course
@@ -155,16 +147,29 @@ float G_Smith(float a, float nDotV, float nDotL)
 	return GGX(nDotL, a) * GGX(nDotV, a);
 }
 
-vec3 SpecularIBL( vec3 SpecularColor, float Roughness, vec3 N, vec3 V ) {
+
+
+// http://the-witness.net/news/2012/02/seamless-cube-map-filtering/
+vec3 fix_cube_lookup( vec3 v, float cube_size, float lod ) {
+	float M = max(max(abs(v.x), abs(v.y)), abs(v.z));
+	float scale = 1 - exp2(lod) / cube_size;
+	if (abs(v.x) != M) v.x *= scale;
+	if (abs(v.y) != M) v.y *= scale;
+	if (abs(v.z) != M) v.z *= scale;
+	return v;
+}
+
+
+vec3 SpecularIBL( vec3 SpecularColor, float Roughness, vec3 N, vec3 V, ivec2 rand ) {
 	vec3 SpecularLighting = vec3(0);
 	float NoV = saturate( dot( N, V ) );
 	NoV = max( 0.001, NoV );
-	const int NumSamples = 64;
+	const int NumSamples = 16;
 	for( int i = 0; i < NumSamples; i++ ) {
-		vec2 Xi = Hammersley( i, NumSamples );
+		vec2 Xi = Hammersley( i, NumSamples, rand );
 		vec3 H = ImportanceSampleGGX( Xi, Roughness, N );
 		
-		vec3 L = 2.0 * dot( V, H ) * H - V;
+		vec3 L = -reflect( V, H );// 2.0 * dot( V, H ) * H - V;
 		float NoL = saturate( dot( N, L ) );
 		float NoH = saturate( dot( N, H ) );
 		float VoH = saturate( dot( V, H ) );
@@ -173,7 +178,9 @@ vec3 SpecularIBL( vec3 SpecularColor, float Roughness, vec3 N, vec3 V ) {
 		//SpecularLighting += textureLod( uCubeMapTex, L, 0.0 ).rgb;
 		
 		if( NoL > 0 ) {
-			vec3 SampleColor = textureLod( uCubeMapTex, L, 0 ).rgb;
+			float lod	= 0.0;
+			vec3 lookup = L;//fix_cube_lookup( L, 128, lod );
+			vec3 SampleColor = texture( uCubeMapTex, lookup, lod ).rgb;
 			//vec3 SampleColor = pow( texture( uCubeMapTex, L ).rgb, vec3(5.0) ) * 4.0;
 			float G = getGeometricShadowing( Roughness, NoV, NoL );
 			vec3 F	= getFresnel( SpecularColor, VoH );
@@ -185,17 +192,64 @@ vec3 SpecularIBL( vec3 SpecularColor, float Roughness, vec3 N, vec3 V ) {
 	return SpecularLighting / float(NumSamples);
 }
 
-float ComputeCubemapMipFromRoughness( float Roughness, float MipCount )
+
+vec3 PrefilterEnvMap(float roughness, vec3 R, ivec2 rand )
 {
-	// Level starting from 1x1 mip
-	float Level = 3 - 1.15 * log2( Roughness );
-	return MipCount - 1 - Level;
+	vec3 N = R;
+	vec3 V = R;
+	
+	vec3 prefilteredColor = vec3(0);
+	float  totalWeight      = 0;
+	
+	const int numSamples = 32;//8192*8;
+	for(int i=0; i<numSamples; ++i)
+	{
+		vec2 xi  = Hammersley(i, numSamples,rand);
+		vec3 H   = ImportanceSampleGGX(xi, roughness, N);
+		vec3 L   = 2 * dot(V, H) * H - V;
+		float  NoL = saturate(dot(N, L));
+		if(NoL>0)
+		{
+			float lod	= 6.0;
+			vec3 lookup = fix_cube_lookup( L, 128, lod );
+			prefilteredColor += texture( uCubeMapTex, lookup, lod ).xyz * NoL;
+			totalWeight += NoL;
+		}
+	}
+	
+	return prefilteredColor / totalWeight;
+}
+
+vec3 hash( vec3 p )
+{
+	p = vec3( dot(p,vec3(127.1,311.7, 74.7)),
+			 dot(p,vec3(269.5,183.3,246.1)),
+			 dot(p,vec3(113.5,271.9,124.6)));
+	
+	return -1.0 + 2.0*fract(sin(p)*43758.5453123);
+}
+
+float noise( in vec3 p )
+{
+	vec3 i = floor( p );
+	vec3 f = fract( p );
+	
+	vec3 u = f*f*(3.0-2.0*f);
+	
+	return mix( mix( mix( dot( hash( i + vec3(0.0,0.0,0.0) ), f - vec3(0.0,0.0,0.0) ),
+						 dot( hash( i + vec3(1.0,0.0,0.0) ), f - vec3(1.0,0.0,0.0) ), u.x),
+					mix( dot( hash( i + vec3(0.0,1.0,0.0) ), f - vec3(0.0,1.0,0.0) ),
+						dot( hash( i + vec3(1.0,1.0,0.0) ), f - vec3(1.0,1.0,0.0) ), u.x), u.y),
+			   mix( mix( dot( hash( i + vec3(0.0,0.0,1.0) ), f - vec3(0.0,0.0,1.0) ),
+						dot( hash( i + vec3(1.0,0.0,1.0) ), f - vec3(1.0,0.0,1.0) ), u.x),
+				   mix( dot( hash( i + vec3(0.0,1.0,1.0) ), f - vec3(0.0,1.0,1.0) ),
+					   dot( hash( i + vec3(1.0,1.0,1.0) ), f - vec3(1.0,1.0,1.0) ), u.x), u.y), u.z );
 }
 
 void main() {
 	// get the normal, light, position and half vector normalized
 	vec3 N                  = normalize( vNormal );
-	vec3 L                  = normalize( vLightPosition - vPosition );
+	/*vec3 L                  = normalize( vLightPosition - vPosition );
 	vec3 V                  = normalize( -vPosition );
 	vec3 H					= normalize(V + L);
 	
@@ -204,11 +258,11 @@ void main() {
 	float NoV				= saturate( dot( N, V ) );
 	float VoH				= saturate( dot( V, H ) );
 	float NoH				= saturate( dot( N, H ) );
-	
+	*/
 	// deduce the specular color from the baseColor and how metallic the material is
 	vec3 specularColor		= mix( vec3( 0.08 * uSpecular ), uBaseColor, uMetallic );
 	
-	// compute the brdf terms
+	/*// compute the brdf terms
 	float distribution		= getNormalDistribution( uRoughness, NoH );
 	vec3 fresnel			= getFresnel( specularColor, VoH );
 	float geom				= getGeometricShadowing( uRoughness, NoV, NoL );
@@ -221,13 +275,28 @@ void main() {
 	// get the light attenuation from its radius
 	float attenuation		= getAttenuation( vLightPosition, vPosition, uLightRadius );
 	color					*= attenuation;
+	*/
+	vec3 color;
+	//vec3 diffuseIBL			= textureLod( uCubeMapTex, fix_cube_lookup( normalize(vWsNormal), 512 ), ComputeCubemapMipFromRoughness( uRoughness, 15.0f ) ).rgb;
 	
-	
-	//vec3 diffuseIBL			= textureLod( uCubeMapTex, normalize(vWsNormal), ComputeCubemapMipFromRoughness( uRoughness, 13.0f ) ).rgb;
 	vec3 wsNormal			= normalize(vWsNormal);
-	vec3 specularIBL		= SpecularIBL( specularColor, uRoughness, wsNormal, vEyePosition );
-	color					= specularIBL * saturate( dot( wsNormal, vEyePosition ) );
+	
+	float n = ( noise( vWsPosition * 2.1 ) + 1.0 ) * 0.5;
+	n += ( noise( vWsPosition * 5.1 ) + 1.0 ) * 0.25;
+	n += ( noise( vWsPosition * 15.1 ) + 1.0 ) * 0.15;
+	n = 1.0-saturate( pow( n, 55.0 ) * 3.5 );
+	
+	float lod				= 7.9;
+	
+	ivec2 rand				= ivec2( ( 1.0 + random( wsNormal.xz ) ) * 8192.0 * 4.0 );
+	vec3 specularIBL		= SpecularIBL( specularColor, uRoughness, wsNormal, vEyePosition, rand );
+	//vec3 diffuseIBL			= PrefilterEnvMap( 1.0, wsNormal, rand );//textureLod( uCubeMapTex, fix_cube_lookup( normalize(vWsNormal), 512.0f, lod ), lod ).rgb;
+	//color					= mix( diffuseIBL, specularIBL, sqrt(sqrt(1.0-uRoughness)) );
+	color					= ( specularIBL ) * saturate( dot( wsNormal, vEyePosition ) );
+	//color = pow( color, vec3( 1.5 ) );
+	
 
+	//color = vec3(n + uRoughness);
 	// apply the tone-mapping
 	color					= Uncharted2Tonemap( color * uExposure );
 	//color					= saturate( color );
