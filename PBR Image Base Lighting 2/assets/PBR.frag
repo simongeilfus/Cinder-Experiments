@@ -191,7 +191,7 @@ void main() {
 	vec3 color				= vec3( 0.0 );
 	
 	if( uMask && uDisplayBackground ) {
-		color				= texture( uCubeMapTex, vWsNormal ).rgb;
+		color				= textureLod( uCubeMapTex, vWsNormal, 0.5 ).rgb;
 	}
 	
 	// don't apply the specularIBL and emissivity to the background
@@ -218,13 +218,13 @@ void main() {
 		vec3 diffuseIBL			= textureLod( uCubeMapTex, vWsNormal, 5 ).rgb * diffuseColor * wsNoV * 0.5;
 		
 		// not sure how to combine this with the rest
-		color					= specularIBL * ( 1.0 - roughness ) * 0.5 + diffuseIBL * ( 1.0 - metallic );
+		color					= specularIBL + diffuseIBL;
 		
 		// add material emissivity
 		color					+= texture( uEmissiveMap, uv ).rgb * 0.5 * vColor.rgb;
 	}
 	
-	for( int i = 0; i < 2; i++ ){
+	for( int i = 1; i < 2; i++ ){
 		
 		vec3 L              = normalize( vLightPositions[i] - vPosition );
 		vec3 H				= normalize(V + L);

@@ -94,17 +94,7 @@ void PBRTexturingApp::setup()
 	mSkyBox = gl::VboMesh::create( geom::Cube() );
 	
 	// load the cubemap texture
-	const string cubemapName = "uffizi";
-	const string cubemapExt = "tif";
-	const ImageSourceRef cubemap[6] = {
-		loadImage( loadAsset( cubemapName + "0003." + cubemapExt ) ),
-		loadImage( loadAsset( cubemapName + "0002." + cubemapExt ) ),
-		loadImage( loadAsset( cubemapName + "0004." + cubemapExt ) ),
-		loadImage( loadAsset( cubemapName + "0005." + cubemapExt ) ),
-		loadImage( loadAsset( cubemapName + "0000." + cubemapExt ) ),
-		loadImage( loadAsset( cubemapName + "0001." + cubemapExt ) )
-	};
-	mCubeMap = gl::TextureCubeMap::create( cubemap, gl::TextureCubeMap::Format().internalFormat( GL_RGB32F ).mipmap() );
+	mCubeMap = gl::TextureCubeMap::createHorizontalCross( loadImage( loadAsset( "interstellar_large.jpg" ) ) );
 	
 	// and the model textures
 	mBaseColorMap = gl::Texture2d::create( loadImage( loadAsset( "leprechaun_baseColor.jpg" ) ),
@@ -172,6 +162,7 @@ void PBRTexturingApp::setup()
 	mBaseColor			= Color::white();
 	mTime				= 0.0f;
 	mAnimateLight		= true;
+	mDisplayBackground	= true;
 	mFStop				= 2.0f;
 	mGamma				= 2.2f;
 	mFocalLength		= 36.0f;
@@ -406,20 +397,6 @@ void PBRTexturingApp::keyDown( KeyEvent event )
 			break;
   case KeyEvent::KEY_t:
 			mCubeMap = gl::TextureCubeMap::createHorizontalCross( loadImage( loadAsset( "violentdays_large.jpg" ) ) );
-			prefilterCubeMap();
-			break;
-  case KeyEvent::KEY_y:
-			const string cubemapName = "uffizi";
-			const string cubemapExt = "tif";
-			const ImageSourceRef cubemap[6] = {
-				loadImage( loadAsset( cubemapName + "0003." + cubemapExt ) ),
-				loadImage( loadAsset( cubemapName + "0002." + cubemapExt ) ),
-				loadImage( loadAsset( cubemapName + "0004." + cubemapExt ) ),
-				loadImage( loadAsset( cubemapName + "0005." + cubemapExt ) ),
-				loadImage( loadAsset( cubemapName + "0000." + cubemapExt ) ),
-				loadImage( loadAsset( cubemapName + "0001." + cubemapExt ) )
-			};
-			mCubeMap = gl::TextureCubeMap::create( cubemap, gl::TextureCubeMap::Format().internalFormat( GL_RGB32F ).mipmap() );
 			prefilterCubeMap();
 			break;
 	}
