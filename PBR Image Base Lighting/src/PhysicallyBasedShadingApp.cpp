@@ -38,10 +38,13 @@ class PhysicallyBasedShadingApp : public AppNative {
 	void keyDown( KeyEvent event ) override;
 	
 	void setupParams();
+	void prefilterCubeMap();
 	
 	MayaCamUI				mMayaCam;
-	gl::GlslProgRef			mShader, mColorShader, mSkyBoxShader;
+	gl::GlslProgRef			mShader, mColorShader, mSkyBoxShader, mCubeMapPrefiltering;
 	params::InterfaceGlRef	mParams;
+	
+	gl::FboCubeMapRef		mFilteredCubeMap;
 	
 	gl::VboMeshRef			mModel;
 	gl::VboMeshRef			mSkyBox;
@@ -55,6 +58,7 @@ class PhysicallyBasedShadingApp : public AppNative {
 	
 	gl::TextureCubeMapRef	mCubeMap;
 	
+	bool					mDisplayBackground;
 	bool					mRotateModel;
 	float					mTime;
 	
@@ -69,7 +73,7 @@ class PhysicallyBasedShadingApp : public AppNative {
 void PhysicallyBasedShadingApp::setup()
 {
 	// build our test model and skybox
-	mModel	= gl::VboMesh::create( /*geom::Teapot() );*/ geom::Sphere().subdivisions( 32 ) );
+	mModel	= gl::VboMesh::create( /*geom::Teapot() );*/ geom::Sphere().subdivisions( 128 ) );
 	mSkyBox = gl::VboMesh::create( geom::Cube() );
 	
 	// load the cubemap texture
@@ -84,6 +88,8 @@ void PhysicallyBasedShadingApp::setup()
 		loadImage( loadAsset( cubemapName + "0001." + cubemapExt ) )
 	};
 	mCubeMap = gl::TextureCubeMap::create( cubemap, gl::TextureCubeMap::Format().internalFormat( GL_RGB32F ).mipmap() );
+	
+	//mCubeMap = gl::TextureCubeMap::createHorizontalCross( loadImage( loadAsset( "interstellar_large.jpg" ) ) );
 	
 	
 	// prepare the Camera ui
@@ -110,6 +116,20 @@ void PhysicallyBasedShadingApp::setup()
 	}
 	catch( gl::GlslProgCompileExc exc ){ CI_LOG_E( exc.what() ); }
 	
+	
+	mFilteredCubeMap = gl::FboCubeMap::create( 512, 512, gl::FboCubeMap::Format().textureCubeMapFormat( gl::TextureCubeMap::Format().internalFormat( GL_RGB16F ).mipmap().minFilter( GL_LINEAR_MIPMAP_LINEAR ).magFilter( GL_LINEAR_MIPMAP_LINEAR ) ) );
+	
+	
+	AssetManager::load( "PrefilterEnvMap.vert", "PrefilterEnvMap.frag", [this]( DataSourceRef vert, DataSourceRef frag ){
+		
+		try {
+			mCubeMapPrefiltering = gl::GlslProg::create( gl::GlslProg::Format().vertex( vert ).fragment( frag ) );
+			mCubeMapPrefiltering->uniform( "uCubeMapTex", 0 );
+			prefilterCubeMap();
+		}
+		catch( gl::GlslProgCompileExc exc ){ CI_LOG_E( exc.what() ); }
+	} );
+	
 	mTimer = gl::QueryTimeSwapped::create();
 	
 	// create a shader for rendering the light
@@ -122,6 +142,7 @@ void PhysicallyBasedShadingApp::setup()
 	mBaseColor			= Color::white();//( 1.0f, 0.8f, 0.025f );
 	mTime				= 0.0f;
 	mRotateModel		= false;
+	mDisplayBackground	= false;
 	mFStop				= 2.0f;
 	mGamma				= 2.2f;
 	mFocalLength		= 36.0f;
@@ -137,6 +158,45 @@ void PhysicallyBasedShadingApp::setup()
 #else
 	mFont = Font( "Arial-BoldMT", 12 );
 #endif
+}
+
+void PhysicallyBasedShadingApp::prefilterCubeMap()
+{
+	auto sphere = gl::VboMesh::create( geom::Sphere().subdivisions( 128 ) );
+	
+	gl::ScopedTextureBind texScp( mCubeMap );
+	gl::ScopedGlslProg shaderScp( mCubeMapPrefiltering );
+	gl::ScopedFramebuffer framebufferScp( mFilteredCubeMap );
+	
+ 
+ 
+	int numMipMaps = 6;
+	ivec2 size = mFilteredCubeMap->getSize();
+	mCubeMapPrefiltering->uniform( "uMaxLod", (float) numMipMaps );
+	mCubeMapPrefiltering->uniform( "uSize", (float) size.x );
+	
+	for( int level = 0; level < numMipMaps; level++ ){
+		
+		gl::pushViewport( ivec2( 0, 0 ), size );
+		for( uint8_t dir = 0; dir < 6; ++dir ) {
+			gl::setProjectionMatrix( ci::CameraPersp( size.x, size.y, 90.0f, 1, 1000 ).getProjectionMatrix() );
+			gl::setViewMatrix( mFilteredCubeMap->calcViewMatrix( GL_TEXTURE_CUBE_MAP_POSITIVE_X + dir, vec3( 0 ) ) );
+			
+			glFramebufferTexture2D( GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_CUBE_MAP_POSITIVE_X + dir, mFilteredCubeMap->getTexture( GL_COLOR_ATTACHMENT0 )->getId(), level );
+			
+			mCubeMapPrefiltering->uniform( "uLod", (float) level );
+			
+			gl::clear();
+			gl::pushMatrices();
+			gl::scale( vec3( 10.0f ) );
+			gl::draw( sphere );
+			gl::popMatrices();
+		}
+		gl::popViewport();
+		
+		CI_LOG_V( "Mipmap level " << level << " generated at " << size );
+		size /= 2;
+	}
 }
 
 void PhysicallyBasedShadingApp::update()
@@ -169,12 +229,12 @@ void PhysicallyBasedShadingApp::update()
 		mMayaCam.setCurrentCam( cam );
 	}
 	
-	getWindow()->setTitle( "Fps: " + to_string( (int) getAverageFps() ) + " / " + to_string( mTimer->getElapsedMilliseconds() ) + "ms" );
+	getWindow()->setTitle( "Fps: " + to_string( (int) getAverageFps() ) );// + " / " + to_string( mTimer->getElapsedMilliseconds() ) + "ms" );
 }
 
 void PhysicallyBasedShadingApp::draw()
 {
-	mTimer->begin();
+	//mTimer->begin();
 	
 	gl::clear( Color( 0, 0, 0 ) );
 	
@@ -188,7 +248,7 @@ void PhysicallyBasedShadingApp::draw()
 	{
 		// set the shader and bind the cubemap texture
 		gl::ScopedGlslProg shadingScp( mShader );
-		gl::ScopedTextureBind cubeMapScp( mCubeMap );
+		gl::ScopedTextureBind cubeMapScp( mFilteredCubeMap->getTexture( GL_COLOR_ATTACHMENT0 ) );
 		
 		// sends the base color, the specular opacity,
 		// the light position, color and radius to the shader
@@ -202,14 +262,15 @@ void PhysicallyBasedShadingApp::draw()
 		
 		
 		// render a grid of sphere with different roughness/metallic values and colors
-		int gridSize = 4;
+		int gridSize = 5;
 		gl::pushModelMatrix();
 		for( int x = -gridSize; x <= gridSize; x++ ){
 			for( int z = -gridSize; z <= gridSize; z++ ){
 				float roughness = lmap( (float) z, (float) -gridSize, (float) gridSize, 0.05f, 1.0f );
 				float metallic	= lmap( (float) x, (float) -gridSize, (float) gridSize, 1.0f, 0.0f );
 				
-				mShader->uniform( "uRoughness", 0.0001f + pow( roughness * mRoughness, 4.0f ) );
+				mShader->uniform( "uRoughness", 0.0001f + roughness * mRoughness );
+				mShader->uniform( "uRoughness4", pow( 0.0001f + roughness * mRoughness, 4.0f ) );
 				mShader->uniform( "uMetallic", metallic * mMetallic );
 				
 				gl::setModelMatrix( glm::translate( vec3( x, 0, z ) * 2.5f ) * glm::rotate( mTime, vec3( 0.123, 0.456, 0.789 ) ) );
@@ -219,24 +280,21 @@ void PhysicallyBasedShadingApp::draw()
 		gl::popModelMatrix();
 		
 		// render the skybox
-		gl::ScopedGlslProg skyBoxShaderScp( mSkyBoxShader );
-		
-		mSkyBoxShader->uniform( "uExposure", lmap( mFocalLength / mFStop, 0.0f, 144.0f, 0.1f, 50.0f ) );
-		mSkyBoxShader->uniform( "uGamma", mGamma );
-		
-		gl::pushMatrices();
-		gl::scale( vec3( 150.0f ) );
-		gl::draw( mSkyBox );
-		gl::popMatrices();
+		if( mDisplayBackground ){
+			gl::ScopedGlslProg skyBoxShaderScp( mSkyBoxShader );
+			
+			mSkyBoxShader->uniform( "uExposure", lmap( mFocalLength / mFStop, 0.0f, 144.0f, 0.1f, 50.0f ) );
+			mSkyBoxShader->uniform( "uGamma", mGamma );
+			
+			gl::pushMatrices();
+			gl::scale( vec3( 150.0f ) );
+			gl::draw( mSkyBox );
+			gl::popMatrices();
+		}
 	}
 	
 	
-	mTimer->end();
-	
-	/*// render the light
-	gl::ScopedGlslProg colorShaderScp( mColorShader );
-	gl::color( mLightColor + Color::white() * 0.5f );
-	gl::drawSphere( mLightPosition, mLightRadius * 0.15f, 32.0f );*/
+	//mTimer->end();
 	
 	// render the ui
 	mParams->draw();
@@ -265,13 +323,47 @@ void PhysicallyBasedShadingApp::keyDown( KeyEvent event )
 			mModel = gl::VboMesh::create( geom::Cube() );
 			break;
   case KeyEvent::KEY_4:
-			mModel = gl::VboMesh::create( geom::Capsule().subdivisionsAxis( 32 ) );
+			mModel = gl::VboMesh::create( geom::Capsule().subdivisionsAxis( 32 ).subdivisionsHeight( 32 ) );
 			break;
   case KeyEvent::KEY_5:
-			mModel = gl::VboMesh::create( geom::Torus().subdivisionsAxis( 32 ) );
+			mModel = gl::VboMesh::create( geom::Torus().subdivisionsAxis( 32 ).subdivisionsHeight( 32 ) );
 			break;
   case KeyEvent::KEY_6:
-			mModel = gl::VboMesh::create( geom::Cone() );
+			mModel = gl::VboMesh::create( geom::Cone().subdivisionsAxis( 32 ).subdivisionsHeight( 32 ) );
+			break;
+  case KeyEvent::KEY_q:
+			mCubeMap = gl::TextureCubeMap::createHorizontalCross( loadImage( loadAsset( "env_map.jpg" ) ) );
+			prefilterCubeMap();
+			break;
+  case KeyEvent::KEY_w:
+			mCubeMap = gl::TextureCubeMap::createHorizontalCross( loadImage( loadAsset( "env_map2.jpg" ) ) );
+			prefilterCubeMap();
+			break;
+  case KeyEvent::KEY_e:
+			mCubeMap = gl::TextureCubeMap::createHorizontalCross( loadImage( loadAsset( "grimmnight_large.jpg" ) ) );
+			prefilterCubeMap();
+			break;
+  case KeyEvent::KEY_r:
+			mCubeMap = gl::TextureCubeMap::createHorizontalCross( loadImage( loadAsset( "interstellar_large.jpg" ) ) );
+			prefilterCubeMap();
+			break;
+  case KeyEvent::KEY_t:
+			mCubeMap = gl::TextureCubeMap::createHorizontalCross( loadImage( loadAsset( "violentdays_large.jpg" ) ) );
+			prefilterCubeMap();
+			break;
+  case KeyEvent::KEY_y:
+			const string cubemapName = "uffizi";
+			const string cubemapExt = "tif";
+			const ImageSourceRef cubemap[6] = {
+				loadImage( loadAsset( cubemapName + "0003." + cubemapExt ) ),
+				loadImage( loadAsset( cubemapName + "0002." + cubemapExt ) ),
+				loadImage( loadAsset( cubemapName + "0004." + cubemapExt ) ),
+				loadImage( loadAsset( cubemapName + "0005." + cubemapExt ) ),
+				loadImage( loadAsset( cubemapName + "0000." + cubemapExt ) ),
+				loadImage( loadAsset( cubemapName + "0001." + cubemapExt ) )
+			};
+			mCubeMap = gl::TextureCubeMap::create( cubemap, gl::TextureCubeMap::Format().internalFormat( GL_RGB32F ).mipmap() );
+			prefilterCubeMap();
 			break;
 	}
 }
@@ -317,6 +409,10 @@ void PhysicallyBasedShadingApp::setupParams()
 		}
 	} );
 	mParams->addParam( "F-Stop Preset", sFStopPresets, &mFStopPreset );
+	
+	mParams->addSeparator();
+	mParams->addText( "Other" );
+	mParams->addParam( "Display Background", &mDisplayBackground );
 }
 
 CINDER_APP_NATIVE( PhysicallyBasedShadingApp, RendererGl )

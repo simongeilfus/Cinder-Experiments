@@ -23,7 +23,7 @@ This sample show the basics of a physically based shading workflow. Mainly adapt
 ##### [Physically Based Shading: Image Based Lighting](/PBR Image Based Lighting/)
 
 
-Not quite working yet!
+Image Based Lighting Specular reflections. Full approximation as described in Epic Unreal Engine 4 papers.
 
 
 ![Image](Images/PBRImageBasedLighting.jpg)  

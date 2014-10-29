@@ -16,6 +16,8 @@
 		00B784B60FF439BC000DE1D7 /* CoreAudio.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 00B784B20FF439BC000DE1D7 /* CoreAudio.framework */; };
 		2081FB46A3E94C00894ED473 /* PhysicallyBasedShadingApp.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F350B38C9229481A9B174DAF /* PhysicallyBasedShadingApp.cpp */; };
 		47038BF4886A489EB2879ADC /* CinderApp.icns in Resources */ = {isa = PBXBuildFile; fileRef = 5455001474614C959A19FCB5 /* CinderApp.icns */; };
+		4B1050FC1A0110C500C8BFB4 /* PrefilterEnvMap.frag in Resources */ = {isa = PBXBuildFile; fileRef = 4B1050FA1A0110C500C8BFB4 /* PrefilterEnvMap.frag */; };
+		4B1050FD1A0110C500C8BFB4 /* PrefilterEnvMap.vert in Resources */ = {isa = PBXBuildFile; fileRef = 4B1050FB1A0110C500C8BFB4 /* PrefilterEnvMap.vert */; };
 		4B502AB519FD225700605CB9 /* AssetManager.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4B502AB319FD225700605CB9 /* AssetManager.cpp */; };
 		4BF3B48319FE79FE003391E1 /* sky_box.frag in Resources */ = {isa = PBXBuildFile; fileRef = 4BF3B48119FE79FE003391E1 /* sky_box.frag */; };
 		4BF3B48419FE79FE003391E1 /* sky_box.vert in Resources */ = {isa = PBXBuildFile; fileRef = 4BF3B48219FE79FE003391E1 /* sky_box.vert */; };
@@ -35,6 +37,8 @@
 		1058C7A1FEA54F0111CA2CBB /* Cocoa.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Cocoa.framework; path = /System/Library/Frameworks/Cocoa.framework; sourceTree = "<absolute>"; };
 		29B97324FDCFA39411CA2CEA /* AppKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AppKit.framework; path = /System/Library/Frameworks/AppKit.framework; sourceTree = "<absolute>"; };
 		29B97325FDCFA39411CA2CEA /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = /System/Library/Frameworks/Foundation.framework; sourceTree = "<absolute>"; };
+		4B1050FA1A0110C500C8BFB4 /* PrefilterEnvMap.frag */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.glsl; name = PrefilterEnvMap.frag; path = ../assets/PrefilterEnvMap.frag; sourceTree = "<group>"; };
+		4B1050FB1A0110C500C8BFB4 /* PrefilterEnvMap.vert */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.glsl; name = PrefilterEnvMap.vert; path = ../assets/PrefilterEnvMap.vert; sourceTree = "<group>"; };
 		4B502AB319FD225700605CB9 /* AssetManager.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = AssetManager.cpp; path = ../src/AssetManager.cpp; sourceTree = "<group>"; };
 		4B502AB419FD225700605CB9 /* AssetManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AssetManager.h; path = ../src/AssetManager.h; sourceTree = "<group>"; };
 		4B8C7B2819EEB20F00A01175 /* PBR.frag */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.glsl; name = PBR.frag; path = ../assets/PBR.frag; sourceTree = "<group>"; };
@@ -167,6 +171,8 @@
 		4B8C7B2719EEB1ED00A01175 /* Assets */ = {
 			isa = PBXGroup;
 			children = (
+				4B1050FA1A0110C500C8BFB4 /* PrefilterEnvMap.frag */,
+				4B1050FB1A0110C500C8BFB4 /* PrefilterEnvMap.vert */,
 				4B8C7B2819EEB20F00A01175 /* PBR.frag */,
 				4B8C7B2919EEB20F00A01175 /* PBR.vert */,
 				4BF3B48119FE79FE003391E1 /* sky_box.frag */,
@@ -229,7 +235,9 @@
 			files = (
 				47038BF4886A489EB2879ADC /* CinderApp.icns in Resources */,
 				4BF3B48319FE79FE003391E1 /* sky_box.frag in Resources */,
+				4B1050FC1A0110C500C8BFB4 /* PrefilterEnvMap.frag in Resources */,
 				4BF3B48419FE79FE003391E1 /* sky_box.vert in Resources */,
+				4B1050FD1A0110C500C8BFB4 /* PrefilterEnvMap.vert in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

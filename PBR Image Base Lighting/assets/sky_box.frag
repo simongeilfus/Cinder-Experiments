@@ -27,7 +27,7 @@ vec3 Uncharted2Tonemap( vec3 x )
 
 void main( void )
 {
-	vec3 color = texture( uCubeMapTex, NormalWorldSpace ).rgb;
+	vec3 color = textureLod( uCubeMapTex, NormalWorldSpace, 0 ).rgb;
 	
 	// apply the tone-mapping
 	color					= Uncharted2Tonemap( color * uExposure );
