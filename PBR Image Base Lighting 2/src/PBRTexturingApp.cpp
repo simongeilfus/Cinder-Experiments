@@ -340,7 +340,7 @@ void PBRTexturingApp::draw()
 		Area centered = Area::proportionalFit( mCopyrightMap->getBounds(), getWindowBounds(), true, false );
 		centered.offset( ivec2( 0, ( getWindowHeight() - centered.y2 ) - 20 ) );
 		
-		gl::color( Color::white() );
+		gl::color( ColorA( 1.0f, 1.0f, 1.0f, 0.3f ) );
 		gl::enableAlphaBlending();
 		gl::draw( mCopyrightMap, centered );
 		gl::disableAlphaBlending();

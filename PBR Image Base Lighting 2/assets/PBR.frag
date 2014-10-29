@@ -185,8 +185,7 @@ void main() {
 	//
 	vec3 diffuseColor		= baseColor - baseColor * metallic;
 	// deduce the specular color from the baseColor and how metallic the material is
-	vec3 specularColor	= mix( vec3( 0.08 * uSpecular ), baseColor, metallic );
-	
+	vec3 specularColor		= mix( vec3( 0.08 * uSpecular ), baseColor, metallic );
 	
 	vec3 color				= vec3( 0.0 );
 	
@@ -212,13 +211,13 @@ void main() {
 		//reflectance				= pow( reflectance, vec3( 1.5 ) );
 		
 		// combine the specular IBL and the BRDF
-		vec3 specularIBL		= sampledColor * reflectance;
+		vec3 specularIBL		= sampledColor * reflectance * uSpecular;
 		
 		// still have to figure out how to do env. irradiance
-		vec3 diffuseIBL			= textureLod( uCubeMapTex, vWsNormal, 5 ).rgb * diffuseColor * wsNoV * 0.5;
+		vec3 diffuseIBL			= textureLod( uCubeMapTex, vWsNormal, 5 ).rgb * ( 1 - 1 * metallic ) * diffuseColor;
 		
 		// not sure how to combine this with the rest
-		color					= specularIBL + diffuseIBL;
+		color					+= diffuseIBL + specularIBL;
 		
 		// add material emissivity
 		color					+= texture( uEmissiveMap, uv ).rgb * 0.5 * vColor.rgb;
@@ -250,7 +249,7 @@ void main() {
 		color				+= attenuation * directLighting;
 		
 		// add in-scattering coeff
-		color				+= saturate( pow( getScattering( -V, vLightPositions[i], -vPosition.z ), 1.35 ) * uLightColors[i] * uLightRadiuses[i] * 0.0025 );
+		color				+= saturate( pow( getScattering( -V, vLightPositions[i], -vPosition.z ), 1.25 ) * uLightColors[i] * uLightRadiuses[i] * 0.1 );
 	}
 
 	
