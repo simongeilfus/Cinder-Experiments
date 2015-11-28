@@ -1,18 +1,18 @@
 #version 400
 
 layout(vertices = 3) out;
-in vec3         vPosition[];
-out vec3        tcPosition[];
 
-uniform float   uTessLevelInner;
-uniform float   uTessLevelOuter;
+uniform float 	uTessLevelInner;
+uniform float 	uTessLevelOuter;
 
-#define ID gl_InvocationID
+in vec3 		vPosition[];
+out vec3 		tcPosition[];
 
 void main()
 {
-    tcPosition[ID] = vPosition[ID];
-    if (ID == 0) {
+    tcPosition[gl_InvocationID] = vPosition[gl_InvocationID];
+    
+    if( gl_InvocationID == 0 ) {
         gl_TessLevelInner[0] = uTessLevelInner;
         gl_TessLevelOuter[0] = uTessLevelOuter;
         gl_TessLevelOuter[1] = uTessLevelOuter;

@@ -1,77 +1,49 @@
-#include "cinder/app/AppNative.h"
+#include "cinder/app/App.h"
 #include "cinder/app/RendererGl.h"
 #include "cinder/gl/gl.h"
-#include "cinder/gl/GlslProg.h"
-#include "cinder/gl/VboMesh.h"
-#include "cinder/gl/ConstantStrings.h"
-#include "cinder/GeomIo.h"
-#include "cinder/Utilities.h"
 
 using namespace ci;
 using namespace ci::app;
 using namespace std;
 
-class WireframeGeometryShaderApp : public AppNative {
-public:
-    void setup();
-    void draw();
-    
-    gl::VboMeshRef  mMesh;
-    gl::GlslProgRef mShader;
+class WireframeGeometryShaderApp : public App {
+  public:
+	WireframeGeometryShaderApp();
+	void draw() override;
+	
+	gl::BatchRef mBatch;
 };
 
-void WireframeGeometryShaderApp::setup()
+WireframeGeometryShaderApp::WireframeGeometryShaderApp()
 {
-    // create our test mesh
-    mMesh   = gl::VboMesh::create( geom::Icosphere().enable( geom::COLOR ) );
-    
-    // wrap the shader initialization in a lambda
-    // so we can re-use it later to re-load on keydown.
-    auto compileShaders = [this](){
-        try {
-            gl::GlslProg::Format format;
-            format.vertex( loadAsset( "shader.vert" ) )
-            .fragment( loadAsset( "shader.frag" ) )
-            .geometry( loadAsset( "shader.geom" ) );
-            
-            mShader = gl::GlslProg::create( format );
-        }
-        catch( gl::GlslProgCompileExc exc ){
-            cout << exc.what() << endl;
-        }
-    };
-    
-    // compile our shader
-    compileShaders();
-    
-    // connect the keydown signal to our compileShader lambda.
-    // easy way to update the shader on the fly.
-    getWindow()->getSignalKeyDown().connect( [compileShaders](KeyEvent event) { compileShaders(); });
-    
-    gl::enableDepthWrite();
-    gl::enableDepthRead();
+	// load the shader and create a batch
+	gl::GlslProg::Format format;
+	format.vertex( loadAsset( "shader.vert" ) )
+	.fragment( loadAsset( "shader.frag" ) )
+	.geometry( loadAsset( "shader.geom" ) );
+	
+	auto shader = gl::GlslProg::create( format );
+	mBatch		= gl::Batch::create( geom::TorusKnot() >> geom::ColorFromAttrib( geom::NORMAL, []( vec3 n ) {
+		return Colorf( n.x, n.y, n.z ); } ), shader );
+	
+	// enable depth testing
+	gl::enableDepthWrite();
+	gl::enableDepthRead();
 }
 
 void WireframeGeometryShaderApp::draw()
 {
-    // clear out the window with black
-    gl::clear( Color( 0, 0, 0 ) );
-    
-    CameraPersp cam;
-    cam.setPerspective( 60, getWindowAspectRatio(), 1, 1000 );
-    gl::setMatrices( cam );
-    gl::viewport( getWindowSize() );
-    
-    // wrap the following calls in an if in case
-    // we add some errors in the shader
-    if( mShader ){
-        gl::ScopedGlslProg shader( mShader );
-        gl::rotate( 5.0f * getElapsedSeconds(), vec3( 0.123, 0.456, 0.789 ) );
-        gl::draw( mMesh );
-    }
-    
-    getWindow()->setTitle( "Framerate: " + toString( (int) getAverageFps() ) );
-    
+	gl::clear( Color::gray( 0.0f ) );
+	
+	// setup a basic camera
+	gl::setMatrices( CameraPersp( getWindowWidth(), getWindowHeight(), 60, 1, 1000 ).calcFraming( Sphere( vec3( 0.0f ), 2.0f ) ) );
+	gl::viewport( getWindowSize() );
+	
+	// render the batch with a small rotation
+	gl::rotate( 0.15f * getElapsedSeconds(), vec3( 0.123, 0.456, 0.789 ) );
+	mBatch->draw();
+	
+	getWindow()->setTitle( "Framerate: " + to_string( (int) getAverageFps() ) );
 }
 
-CINDER_APP_NATIVE( WireframeGeometryShaderApp, RendererGl )
+CINDER_APP( WireframeGeometryShaderApp, RendererGl( RendererGl::Options().msaa( 8 ) ) )

@@ -10,8 +10,8 @@
     </ProjectConfiguration>
   </ItemGroup>
   <PropertyGroup Label="Globals">
-    <ProjectGuid>{4A844A99-F471-44D7-8F48-B66D9C2C51EC}</ProjectGuid>
-    <RootNamespace>TessellationShader</RootNamespace>
+    <ProjectGuid>{F08D2E1A-C7EB-40D3-B182-3C8088E59D98}</ProjectGuid>
+    <RootNamespace>TessellatedNoise</RootNamespace>
     <Keyword>Win32Proj</Keyword>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
@@ -108,7 +108,7 @@
   <ItemGroup />
   <ItemGroup />
   <ItemGroup>
-    <ClCompile Include="..\src\TessellationShaderApp.cpp" />
+    <ClCompile Include="..\src\TessellatedNoiseApp.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\include\Resources.h" />

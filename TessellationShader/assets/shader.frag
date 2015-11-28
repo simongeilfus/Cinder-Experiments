@@ -1,14 +1,20 @@
+/* 
+ Tessellation Shader from Philip Rideout
+ 
+ "Triangle Tessellation with OpenGL 4.0"
+ http://prideout.net/blog/?p=48 */
+
 #version 400
 
-out vec3    oColor;
-in vec3 gFacetNormal;
-in vec3 gTriDistance;
-in vec3 gPatchDistance;
-in float gPrimitive;
+out vec4    oColor;
+in vec3     gFacetNormal;
+in vec3     gTriDistance;
+in vec3     gPatchDistance;
+in float    gPrimitive;
 
-const vec3 LightPosition = vec3( 0.5, 0.2, 1.0 );
-const vec3 DiffuseMaterial = vec3( 1.0 );
-const vec3 AmbientMaterial = vec3( 0.025 );
+const vec3 lightPosition    = vec3( 0.5, 0.2, 1.0 );
+const vec3 diffuseColor     = vec3( 1.0 );
+const vec3 ambientColor     = vec3( 0.025 );
 
 float amplify(float d, float scale, float offset)
 {
@@ -20,14 +26,14 @@ float amplify(float d, float scale, float offset)
 
 void main()
 {
-    vec3 N = normalize(gFacetNormal);
-    vec3 L = LightPosition;
-    float df = abs(dot(N, L));
-    vec3 color = AmbientMaterial + df * DiffuseMaterial;
+    vec3 N      = normalize(gFacetNormal);
+    vec3 L      = lightPosition;
+    float NoL   = abs(dot(N, L));
+    vec3 color  = ambientColor + NoL * diffuseColor;
     
-    float d1 = min(min(gTriDistance.x, gTriDistance.y), gTriDistance.z);
-    float d2 = min(min(gPatchDistance.x, gPatchDistance.y), gPatchDistance.z);
-    color = amplify(d1, 40, -0.5) * amplify(d2, 60, -0.5) * color;
+    float d1    = min(min(gTriDistance.x, gTriDistance.y), gTriDistance.z);
+    float d2    = min(min(gPatchDistance.x, gPatchDistance.y), gPatchDistance.z);
+    color       = amplify(d1, 40, -0.5) * amplify(d2, 60, -0.5) * color;
     
-    oColor = color;
+    oColor      = vec4( color, 1.0 );
 }

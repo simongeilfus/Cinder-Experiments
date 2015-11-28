@@ -44,8 +44,8 @@ void PBRTexturingBasicsApp::setup()
 	
 	// load the prefiltered IBL Cubemaps
 	auto cubeMapFormat	= gl::TextureCubeMap::Format().mipmap().internalFormat( GL_RGB16F ).minFilter( GL_LINEAR_MIPMAP_LINEAR ).magFilter( GL_LINEAR );
-	mIrradianceMap		= gl::TextureCubeMap::createFromDds( loadAsset( "WellsIrradiance.dds" ), cubeMapFormat );
-	mRadianceMap		= gl::TextureCubeMap::createFromDds( loadAsset( "WellsRadiance.dds" ), cubeMapFormat );
+	mIrradianceMap		= gl::TextureCubeMap::createFromDds( loadAsset( "CathedralIrradiance.dds" ), cubeMapFormat );
+	mRadianceMap		= gl::TextureCubeMap::createFromDds( loadAsset( "CathedralRadiance.dds" ), cubeMapFormat );
 	
 	// load the material textures
 	auto textureFormat	= gl::Texture2d::Format().mipmap().minFilter( GL_LINEAR_MIPMAP_LINEAR ).magFilter( GL_LINEAR );
@@ -104,7 +104,7 @@ void PBRTexturingBasicsApp::update()
 			ui::Checkbox( "Rotate", &mRotateModel );
 		}
 		if( ui::CollapsingHeader( "Environment", nullptr, true, true ) ) {
-			static int currentEnvironment = 0;
+			static int currentEnvironment = 2;
 			const static vector<string> environments = { "Bolonga", "Wells", "Cathedral" };
 			if( ui::Combo( "###Environments", &currentEnvironment, environments ) ) {
 				auto cubeMapFormat	= gl::TextureCubeMap::Format().mipmap().internalFormat( GL_RGB16F ).minFilter( GL_LINEAR_MIPMAP_LINEAR ).magFilter( GL_LINEAR );

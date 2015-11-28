@@ -1,139 +1,88 @@
-#include "cinder/app/AppNative.h"
+#include "cinder/app/App.h"
 #include "cinder/app/RendererGl.h"
 #include "cinder/gl/gl.h"
-#include "cinder/gl/Context.h"
-#include "cinder/gl/Fbo.h"
-#include "cinder/gl/GlslProg.h"
-#include "cinder/gl/VboMesh.h"
-#include "cinder/gl/Shader.h"
-#include "cinder/gl/ConstantStrings.h"
-
-#include "cinder/GeomIo.h"
-#include "cinder/Log.h"
-#include "cinder/ObjLoader.h"
-#include "cinder/Rand.h"
-#include "cinder/Utilities.h"
 
 using namespace ci;
 using namespace ci::app;
 using namespace std;
 
-
-/* 
+/*
  Tessellation Shader from Philip Rideout
  
  "Triangle Tessellation with OpenGL 4.0"
  http://prideout.net/blog/?p=48 */
 
-class TessellationShaderApp : public AppNative {
+class TessellationShaderApp : public App {
 public:
-    void setup();
-    void draw();
-    
-    gl::VboMeshRef  mMesh;
-    gl::GlslProgRef mShader;
-    
-    float mInnerLevel;
-    float mOuterLevel;
+	TessellationShaderApp();
+	void draw() override;
+	
+	gl::BatchRef	mBatch;
+	float			mInnerLevel, mOuterLevel;
 };
 
-void TessellationShaderApp::setup()
-{    
-    getWindow()->setAlwaysOnTop();
-    
-    // create our test mesh
-    mMesh   = gl::VboMesh::create( geom::Icosahedron() );
-    
-    // wrap the shader initialization in a lambda
-    // so we can re-use it later to re-load on keydown.
-    auto compileShaders = [this](){
-        try {
-            gl::GlslProg::Format format;
-            format.vertex( loadAsset( "shader.vert" ) )
-            .fragment( loadAsset( "shader.frag" ) )
-            .geometry( loadAsset( "shader.geom" ) )
-            .tessellation( loadAsset( "shader.cont" ), loadAsset( "shader.eval" ) );
-            ;
-            mShader = gl::GlslProg::create( format );
-        }
-        catch( gl::GlslProgCompileExc exc ){
-            cout << exc.what() << endl;
-        }
-    };
-    
-    // compile our shader
-    compileShaders();
-    
-    mInnerLevel = 1.0f;
-    mOuterLevel = 1.0f;
-    
-    // connect the keydown signal to our compileShader lambda.
-    // easy way to update the shader on the fly.
-    getWindow()->getSignalKeyDown().connect( [this, compileShaders](KeyEvent event) {
-        switch ( event.getCode() ) {
-            case KeyEvent::KEY_r : compileShaders(); break;
-            case KeyEvent::KEY_LEFT : mInnerLevel--; break;
-            case KeyEvent::KEY_RIGHT : mInnerLevel++; break;
-            case KeyEvent::KEY_DOWN : mOuterLevel--; break;
-            case KeyEvent::KEY_UP : mOuterLevel++; break;
-            case KeyEvent::KEY_1 : mMesh = gl::VboMesh::create( geom::Cube() ); break;
-            case KeyEvent::KEY_2 : mMesh = gl::VboMesh::create( geom::Icosahedron() ); break;
-            case KeyEvent::KEY_3 : mMesh = gl::VboMesh::create( geom::Cylinder() ); break;
-            case KeyEvent::KEY_4 : mMesh = gl::VboMesh::create( geom::Cone() ); break;
-            case KeyEvent::KEY_5 : mMesh = gl::VboMesh::create( geom::Sphere() ); break;
-            case KeyEvent::KEY_6 : mMesh = gl::VboMesh::create( geom::Icosphere() ); break;
-
-        }
-        mInnerLevel = math<float>::max( mInnerLevel, 1.0f );
-        mOuterLevel = math<float>::max( mOuterLevel, 1.0f );
-    });
-    
-    gl::enableDepthWrite();
-    gl::enableDepthRead();
+TessellationShaderApp::TessellationShaderApp()
+{
+	// create a batch with our tesselation shader
+	auto format = gl::GlslProg::Format()
+	.vertex( loadAsset( "shader.vert" ) )
+	.fragment( loadAsset( "shader.frag" ) )
+	.geometry( loadAsset( "shader.geom" ) )
+	.tessellationCtrl( loadAsset( "shader.cont" ) )
+	.tessellationEval( loadAsset( "shader.eval" ) );
+	auto shader	= gl::GlslProg::create( format );
+	mBatch		= gl::Batch::create( geom::Icosahedron(), shader );
+	
+	mInnerLevel = 1.0f;
+	mOuterLevel = 1.0f;
+	
+	// connect the keydown signal
+	getWindow()->getSignalKeyDown().connect( [this](KeyEvent event) {
+		switch ( event.getCode() ) {
+			case KeyEvent::KEY_LEFT : mInnerLevel--; break;
+			case KeyEvent::KEY_RIGHT : mInnerLevel++; break;
+			case KeyEvent::KEY_DOWN : mOuterLevel--; break;
+			case KeyEvent::KEY_UP : mOuterLevel++; break;
+			case KeyEvent::KEY_1 : mBatch->replaceVboMesh( gl::VboMesh::create( geom::Cube() ) ); break;
+			case KeyEvent::KEY_2 : mBatch->replaceVboMesh( gl::VboMesh::create( geom::Icosahedron() ) ); break;
+			case KeyEvent::KEY_3 : mBatch->replaceVboMesh( gl::VboMesh::create( geom::Sphere() ) ); break;
+			case KeyEvent::KEY_4 : mBatch->replaceVboMesh( gl::VboMesh::create( geom::Icosphere() ) ); break;
+				
+		}
+		mInnerLevel = math<float>::max( mInnerLevel, 1.0f );
+		mOuterLevel = math<float>::max( mOuterLevel, 1.0f );
+	});
+	
+	gl::enableDepthWrite();
+	gl::enableDepthRead();
+	gl::disableBlending();
 }
-
-
 void TessellationShaderApp::draw()
 {
-    // clear out the window with black
-    gl::clear( Color( 0, 0, 0 ) );
-    
-    CameraPersp cam;
-    cam.setPerspective( 60, getWindowAspectRatio(), 1, 1000 );
-    gl::setMatrices( cam );
-    gl::viewport( getWindowSize() );
-    
-    // wrap the following calls in an if in case
-    // we add some errors in the shader
-    if( mShader ){
-        gl::ScopedGlslProg shader( mShader );
-        mShader->uniform( "TessLevelInner", mInnerLevel );
-        mShader->uniform( "TessLevelOuter", mOuterLevel );
-        
-        gl::rotate( 5.0f * getElapsedSeconds(), vec3( 0.123, 0.456, 0.789 ) );
-        
-        auto ctx = gl::context();
-        auto curGlslProg = ctx->getGlslProg();
-        if( ! curGlslProg ) {
-            CI_LOG_E( "No GLSL program bound" );
-            return;
-        }
-        
-        ctx->pushVao();
-        ctx->getDefaultVao()->replacementBindBegin();
-        mMesh->buildVao( curGlslProg );
-        ctx->getDefaultVao()->replacementBindEnd();
-        ctx->setDefaultShaderVars();
-        
-        if( mMesh->getNumIndices() )
-            glDrawElements( GL_PATCHES, mMesh->getNumIndices(), mMesh->getIndexDataType(), (GLvoid*)( 0 ) );
-        else
-            glDrawArrays( GL_PATCHES, 0, mMesh->getNumIndices() );
-        
-        ctx->popVao();
-    }
-    
-    getWindow()->setTitle( "Framerate: " + toString( (int) getAverageFps() ) );
+	gl::clear( Color::gray( 0.35f ) );
+	
+	// setup basic camera
+	auto cam = CameraPersp( getWindowWidth(), getWindowHeight(), 60, 1, 1000 ).calcFraming( Sphere( vec3( 0.0f ), 1.25f ) );
+	gl::setMatrices( cam );
+	gl::rotate( getElapsedSeconds() * 0.1f, vec3( 0.123, 0.456, 0.789 ) );
+	gl::viewport( getWindowSize() );
+	
+	// update uniforms
+	mBatch->getGlslProg()->uniform( "uTessLevelInner", mInnerLevel );
+	mBatch->getGlslProg()->uniform( "uTessLevelOuter", mOuterLevel );
+	
+	// bypass gl::Batch::draw method so we can use GL_PATCHES
+	gl::ScopedVao scopedVao( mBatch->getVao().get() );
+	gl::ScopedGlslProg scopedShader( mBatch->getGlslProg() );
+	
+	gl::context()->setDefaultShaderVars();
+	
+	if( mBatch->getVboMesh()->getNumIndices() )
+		glDrawElements( GL_PATCHES, mBatch->getVboMesh()->getNumIndices(), mBatch->getVboMesh()->getIndexDataType(), (GLvoid*)( 0 ) );
+	else
+		glDrawArrays( GL_PATCHES, 0, mBatch->getVboMesh()->getNumIndices() );
+	
+	getWindow()->setTitle( "Framerate: " + to_string( (int) getAverageFps() ) );
 }
 
-CINDER_APP_NATIVE( TessellationShaderApp, RendererGl )
+CINDER_APP( TessellationShaderApp, RendererGl( RendererGl::Options().msaa( 8 ) ) )

@@ -97,7 +97,7 @@ void PBRImageBasedLightingApp::update()
 			ui::Checkbox( "Rotate", &mRotateModel );
 		}
 		if( ui::CollapsingHeader( "Environment", nullptr, true, true ) ) {
-			static int currentEnvironment = 0;
+			static int currentEnvironment = 1;
 			const static vector<string> environments = { "Bolonga", "Wells", "Cathedral" };
 			if( ui::Combo( "###Environments", &currentEnvironment, environments ) ) {
 				auto cubeMapFormat	= gl::TextureCubeMap::Format().mipmap().internalFormat( GL_RGB16F ).minFilter( GL_LINEAR_MIPMAP_LINEAR ).magFilter( GL_LINEAR );

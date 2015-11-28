@@ -2,7 +2,7 @@
 
 in vec3     gColor;
 in vec3     gTriDistance;
-out vec3    oColor;
+out vec4    oColor;
 
 // From Florian Boesch post on barycentric coordinates
 // http://codeflow.org/entries/2012/aug/02/easy-wireframe-display-with-barycentric-coordinates/
@@ -28,5 +28,5 @@ vec3 wireframe( vec3 color ) {
 
 void main( void ) {
     // output the colored wireframe
-    oColor = wireframe( gColor );
+    oColor = vec4( wireframe( vec3( 0.5 ) + gColor ), 1.0 );
 }
