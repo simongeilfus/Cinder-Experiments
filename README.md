@@ -1,8 +1,8 @@
 ## Cinder Experiments
 
-**WORK IN PROGRESS - Currently updating everything to Cinder 0.9 **
+***WORK IN PROGRESS - Currently updating everything to Cinder 0.9***
 
-Samples, experiments and other bits of code that doesn't deserve their own rep.
+Samples, experiments and other bits of code that doesn't deserve a repository on their own.
 
 #### License
 Copyright (c) 2015, Simon Geilfus - All rights reserved.
