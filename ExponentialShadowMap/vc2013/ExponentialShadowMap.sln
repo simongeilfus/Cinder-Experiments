@@ -1,0 +1,20 @@
+
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 2013
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "ExponentialShadowMap", "ExponentialShadowMap.vcxproj", "{FDC2DF79-BC28-47B8-ADD0-13D24DD4BE3A}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Win32 = Debug|Win32
+		Release|Win32 = Release|Win32
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{FDC2DF79-BC28-47B8-ADD0-13D24DD4BE3A}.Debug|Win32.ActiveCfg = Debug|Win32
+		{FDC2DF79-BC28-47B8-ADD0-13D24DD4BE3A}.Debug|Win32.Build.0 = Debug|Win32
+		{FDC2DF79-BC28-47B8-ADD0-13D24DD4BE3A}.Release|Win32.ActiveCfg = Release|Win32
+		{FDC2DF79-BC28-47B8-ADD0-13D24DD4BE3A}.Release|Win32.Build.0 = Release|Win32
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal
