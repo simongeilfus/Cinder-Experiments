@@ -32,6 +32,9 @@ public:
 
 void PBRTexturingBasicsApp::setup()
 {
+	// add the common texture folder
+	addAssetDirectory( fs::path( __FILE__ ).parent_path().parent_path().parent_path() / "common/textures" );
+	
 	// create a Camera and a Camera ui
 	mCamera		= CameraPersp( getWindowWidth(), getWindowHeight(), 50.0f, 0.1f, 200.0f ).calcFraming( Sphere( vec3( 0.0f ), 2.0f ) );
 	mCameraUi	= CameraUi( &mCamera, getWindow(), -1 );

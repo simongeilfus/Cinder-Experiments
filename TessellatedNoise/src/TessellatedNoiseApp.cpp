@@ -27,6 +27,9 @@ public:
 
 TessellatedNoiseApp::TessellatedNoiseApp()
 {
+	// add the common texture folder
+	addAssetDirectory( fs::path( __FILE__ ).parent_path().parent_path().parent_path() / "common/textures" );
+	
 	// create a batch with our tesselation shader
 	auto format = gl::GlslProg::Format()
 	.vertex( loadAsset( "shader.vert" ) )
