@@ -29,3 +29,6 @@ ipch/
 # doxygen generated files
 docs/html
 docs/doxygen/cinder.tag
+
+# ImGui
+imgui.ini

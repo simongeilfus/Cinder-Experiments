@@ -45,7 +45,7 @@ void PBRBasicsApp::setup()
 	mLightBatch		= gl::Batch::create( geom::Sphere().subdivisions( 32 ), gl::getStockShader( gl::ShaderDef().color() ) );
 	
 	// set the initial parameters and setup the ui
-	mGridSize			= 6;
+	mGridSize			= 4;
 	mRoughness			= 1.0f;
 	mMetallic			= 1.0f;
 	mSpecular			= 1.0f;

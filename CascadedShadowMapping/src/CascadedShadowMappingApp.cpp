@@ -59,6 +59,8 @@ class CascadedShadowMappingApp : public App {
 
 CascadedShadowMappingApp::CascadedShadowMappingApp()
 {
+	cout << fs::path( fs::path( __FILE__ ).parent_path().parent_path().parent_path() / "/common" ) << endl;
+	
 	auto shader = gl::GlslProg::create( loadAsset( "shader.vert" ), loadAsset( "shader.frag" ) );
 	auto shadowShader = gl::GlslProg::create( loadAsset( "shadowmap.vert" ), loadAsset( "shadowmap.frag" ), loadAsset( "shadowmap.geom" ) );
 	auto source = ObjLoader( loadAsset( "Terrain2.obj" ) );
@@ -235,11 +237,13 @@ void CascadedShadowMappingApp::updateCascades( const CameraPersp &camera )
 	static float lambda	= 0.8f;
 	ui::DragFloat( "lambda", &lambda, 0.001f, 0.0f );
 	
+	static float cascadesNear = 0.01f;
 	static float cascadesFar = 35.0f;
-	cascadesFar = glm::length( mCamera.getEyePoint() ) * 2;
-	ui::DragFloat( "cascadesFar", &cascadesFar, 0.1f, 0.0f );
+	//cascadesFar = glm::length( mCamera.getEyePoint() ) * 2;
+	ui::DragFloat( "cascadesNear", &cascadesNear, 0.1f, 0.01f, cascadesFar );
+	ui::DragFloat( "cascadesFar", &cascadesFar, 0.1f, cascadesNear );
 	
-	float near		= camera.getNearClip();
+	float near		= cascadesNear;//camera.getNearClip();
 	float far		= cascadesFar;
 	for( size_t i = 0; i < mCascadesCount; ++i ) {
 		// find the split planes using GPU Gem 3. Chap 10 "Practical Split Scheme".
