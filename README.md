@@ -1,10 +1,25 @@
 ## Cinder Experiments
+Samples, experiments and other bits of code that doesn't deserve a repository on their own.
 
 ***WORK IN PROGRESS - Currently updating everything to Cinder 0.9***
 
-Samples, experiments and other bits of code that doesn't deserve a repository on their own.
+##### [PBR Basics](/PBRBasics)
+![Image](https://c1.staticflickr.com/1/582/23359423301_7ac7ecf293_o.gif)
+##### [PBR Image Based Lighting](/PBRImageBasedLighting)
+![Image](https://c1.staticflickr.com/1/665/23415737176_f9378210a5_o.gif)
+##### [PBR Texturing Basics](/PBRTexturingBasics)
+##### [Exponential Shadow Mapping](/ExponentialShadowMap)
+##### [Cascaded Shadow Mapping](/CascadedShadowMapping)
+![Image](https://c2.staticflickr.com/6/5791/23073995959_545492c54c_o.gif)
+![Image](https://c1.staticflickr.com/1/624/22813606734_c3e293dc9f_o.gif)
+##### [Viewport Array](/ViewportArray)
+![Image](https://c2.staticflickr.com/6/5641/23415803906_880f6eeccb_o.gif)
+##### [Wireframe Geometry Shader](/WireframeGeometryShader)
+![Image](https://c2.staticflickr.com/6/5726/23415788246_a5513fc938_o.gif)
 
-#### License
+
+
+##### License
 Copyright (c) 2015, Simon Geilfus - All rights reserved.
 This code is intended for use with the Cinder C++ library: http://libcinder.org
 
