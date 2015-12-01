@@ -16,6 +16,8 @@ Image Based Lighting Diffuse and Specular reflections. Use Cubemaps created in [
 ##### [PBR Texturing Basics](/PBRTexturingBasics/src/PBRTexturingBasicsApp.cpp)
 Basic use of textures in a physically based shading workflow.
 
+![Image](/Images/U8jbuV7Ujv.gif)
+
 ##### [Exponential Shadow Mapping](/ExponentialShadowMap/src/ExponentialShadowMapApp.cpp)
 ![Image](/Images/OPwIkI154Y.gif)
 
