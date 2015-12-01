@@ -9,7 +9,7 @@ This sample show the basics of a physically based shading workflow. Mainly adapt
 ![Image](/Images/MO6ufSrgB0.gif)
 
 ##### [PBR Image Based Lighting](/PBRImageBasedLighting/src/PBRImageBasedLightingApp.cpp)
-Image Based Lighting Diffuse and Specular reflections. Use Cubemaps created in [CmftStudio](https://github.com/dariomanesku/cmftStudio). This sample uses a full approximation as described on [this Unreal Engine blog post](https://www.unrealengine.com/blog/physically-based-shading-on-mobile).
+Image Based Lighting Diffuse and Specular reflections. Uses Cubemaps created in [CmftStudio](https://github.com/dariomanesku/cmftStudio). This sample uses a full approximation as described on [this Unreal Engine blog post](https://www.unrealengine.com/blog/physically-based-shading-on-mobile).
 
 ![Image](/Images/r8dYbVGGWg.gif)
 
@@ -31,7 +31,7 @@ Small sample showing the use of ```glViewportArrayv``` and ```gl_ViewportIndex``
 ![Image](/Images/D3aQZUpUP4.gif)
 
 ##### [Wireframe Geometry Shader](/WireframeGeometryShader/src/WireframeGeometryShaderApp.cpp)
-Geometry and fragment shader for solid wireframe rendering.
+Geometry and fragment shader for solid wireframe rendering. Mostly adapted from [Florian Boesch great post on barycentric coordinates](http://codeflow.org/entries/2012/aug/02/easy-wireframe-display-with-barycentric-coordinates/).
 
 ![Image](/Images/YDbBnGu8UQ.gif)
 
