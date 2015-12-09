@@ -9,7 +9,6 @@ uniform sampler2D 		uAmbientOcclusion;
 uniform sampler2DArray 	uShadowMap;
 
 uniform vec3 			uLightDirection;
-uniform mat4 			uOffsetMat;
 uniform float 			uExpC;
 uniform float 			uShowCascades;
 
@@ -112,16 +111,19 @@ void main() {
 
 	// get shadow coords
 	mat4 viewProj = getCascadeViewProjection( cascadeWeights, uCascadesMatrices );
-	vec4 shadowCoord = uOffsetMat * viewProj * vPosition;
+	vec4 coord = viewProj * vPosition;
 
 	// calculate shadow term
-	float near = getCascadeNear( cascadeWeights );
-	float far = getCascadeFar( cascadeWeights );
-	float depth = shadowCoord.z - 0.0052;
-	float occluderDepth = texture( uShadowMap, vec3( shadowCoord.xy, getCascadeLayer( cascadeWeights ) ) ).r;
-	float occluder = exp( uExpC * occluderDepth );
-	float receiver = exp( -uExpC * depth );
-	float shadows = clamp( occluder * receiver, 0.0, 1.0 );
+	float shadows = 1.0;
+	if ( coord.z > 0.0 && coord.x > 0.0 && coord.y > 0 && coord.x <= 1 && coord.y <= 1 ) {
+		float near = getCascadeNear( cascadeWeights );
+		float far = getCascadeFar( cascadeWeights );
+		float depth = coord.z - 0.0052;
+		float occluderDepth = texture( uShadowMap, vec3( coord.xy, getCascadeLayer( cascadeWeights ) ) ).r;
+		float occluder = exp( uExpC * occluderDepth );
+		float receiver = exp( -uExpC * depth );
+		shadows = clamp( occluder * receiver, 0.0, 1.0 );
+	}
 
 	// deduce the diffuse and specular color from the baseColor and how metallic the material is
 	vec3 uBaseColor = vec3( 1.0 );
@@ -139,18 +141,13 @@ void main() {
 	// get the specular and diffuse and combine them
 	vec3 diffuse			= getDiffuse( diffuseColor, uRoughness, NoV, NoL, VoH );
 	vec3 specular			= NoL * ( distribution * fresnel * geom );
-	vec3 color				= shadows * 3.0 * ( diffuse + specular );
+	float ao 				= texture( uAmbientOcclusion, vec2( vUv.x, 1.0 + vUv.y ) ).r;
+	vec3 color				= ao * saturate( vec3( 0.05 ) + shadows * 3.0 * ( diffuse + specular ) );
 
 	// gamma correction
 	color					= pow( color, vec3( 1.0f / 2.2f ) );
 
-	oColor = vec4( shadowCoord.xy, 0.0, 1.0 );
-	//oColor = texture( mAmbientOcclusion, shadowCoord.xy );
-	oColor = vec4( vec3( shadows * NoL ), 1.0 );
-	oColor = vec4( color, 1.0 );
-	//oColor = vec4( vec3( shadowCoord.z > occluderDepth + 0.0003 ? 0.0 : 1.0 ), 1.0 );
-	//oColor = vec4( vec3( depth ), 1.0 );
-	oColor.rgb *= texture( uAmbientOcclusion, vec2( vUv.x, 1.0 + vUv.y ) ).rgb;
-	oColor.rgb = mix( oColor.rgb, oColor.rgb * getCascadeColor( cascadeWeights ), uShowCascades );
-
+	// output final color
+	oColor 					= vec4( color, 1.0 );
+	oColor.rgb 				= mix( oColor.rgb, oColor.rgb * getCascadeColor( cascadeWeights ), uShowCascades );
 }
