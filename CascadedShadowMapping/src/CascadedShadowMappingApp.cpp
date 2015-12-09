@@ -171,7 +171,7 @@ void CascadedShadowMappingApp::update()
 			glPolygonOffset( 2.0f, 2.0f );
 		}
 		
-		gl::clear( Color( 0.0f, 0.0f, 0.0f ) );
+		gl::clear( Color( 1.0f, 0.0f, 0.0f ) );
 		
 		for( const auto &obj : mScene ) {
 			auto batch	= std::get<1>( obj );
@@ -271,8 +271,8 @@ void CascadedShadowMappingApp::userInterface()
 	
 	// debug options
 	if( ui::CollapsingHeader( "Debug", nullptr, true, true ) ) {
-		ui::Checkbox( "ShowCascades", &mShowCascades );
-		ui::Checkbox( "ShowShadowMaps", &mShowShadowMaps );
+		ui::Checkbox( "Show Cascades", &mShowCascades );
+		ui::Checkbox( "Show ShadowMaps", &mShowShadowMaps );
 	}
 	
 	// update window title
@@ -285,7 +285,7 @@ CascadedShadowsRef CascadedShadows::create()
 }
 
 CascadedShadows::CascadedShadows()
-: mResolution( 1024 ), mExpC( 120.0f ), mSplitLambda( 0.5f )
+: mResolution( 2048 ), mExpC( 120.0f ), mSplitLambda( 0.5f )
 {
 	// load shaders
 	auto format = gl::GlslProg::Format().vertex( loadAsset( "gaussian.vert" ) ).fragment( loadAsset( "gaussian.frag" ) ).geometry( loadAsset( "gaussian.geom" ) ).define( "KERNEL", "KERNEL_7x7_GAUSSIAN" );
@@ -399,7 +399,7 @@ void CascadedShadows::filter()
 void CascadedShadows::createFramebuffers()
 {
 	// create a layered framebuffer for the different shadow maps
-	auto textureArrayFormat = gl::Texture3d::Format().target( GL_TEXTURE_2D_ARRAY ).internalFormat( GL_R32F ).magFilter( GL_LINEAR ).minFilter( GL_LINEAR ).wrap( GL_CLAMP_TO_EDGE );
+	auto textureArrayFormat = gl::Texture3d::Format().target( GL_TEXTURE_2D_ARRAY ).internalFormat( GL_R16F ).magFilter( GL_LINEAR ).minFilter( GL_LINEAR ).wrap( GL_CLAMP_TO_EDGE );
 	auto textureArray = gl::Texture3d::create( mResolution, mResolution, 4, textureArrayFormat );
 	auto textureArrayDepth = gl::Texture3d::create( mResolution, mResolution, 4, gl::Texture3d::Format().target( GL_TEXTURE_2D_ARRAY ).internalFormat( GL_DEPTH_COMPONENT24 ) );
 	mShadowMapArray = gl::Fbo::create( mResolution, mResolution, gl::Fbo::Format().attachment( GL_COLOR_ATTACHMENT0, textureArray ).attachment( GL_DEPTH_ATTACHMENT, textureArrayDepth ) );
