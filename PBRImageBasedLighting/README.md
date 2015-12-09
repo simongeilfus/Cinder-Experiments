@@ -1,40 +1,7 @@
-## Cinder Experiments
-Samples, experiments and other bits of code that don't deserve a repository on their own.
-
-***WORK IN PROGRESS - Currently updating everything to Cinder 0.9***
-
-##### [PBR Basics](/PBRBasics/src/PBRBasicsApp.cpp)
-This sample show the basics of a physically based shading workflow. Mainly adapted from disney and epic papers on the subject. PBR without textures is not particularly interesting, but it's a good introduction.
-
-![Image](/Images/MO6ufSrgB0.gif)
-
-##### [PBR Image Based Lighting](/PBRImageBasedLighting/src/PBRImageBasedLightingApp.cpp)
+##### [PBR Image Based Lighting](/src/PBRImageBasedLightingApp.cpp)
 Image Based Lighting Diffuse and Specular reflections. Uses Cubemaps created in [CmftStudio](https://github.com/dariomanesku/cmftStudio). This sample uses a full approximation as described on [this Unreal Engine blog post](https://www.unrealengine.com/blog/physically-based-shading-on-mobile).
 
-![Image](/Images/r8dYbVGGWg.gif)
-
-##### [PBR Texturing Basics](/PBRTexturingBasics/src/PBRTexturingBasicsApp.cpp)
-Basic use of textures in a physically based shading workflow.
-
-![Image](/Images/U8jbuV7Ujv.gif)
-
-##### [Exponential Shadow Mapping](/ExponentialShadowMap/src/ExponentialShadowMapApp.cpp)
-![Image](/Images/OPwIkI154Y.gif)
-
-##### [Cascaded Shadow Mapping](/CascadedShadowMapping/src/CascadedShadowMappingApp.cpp)
-![Image](/Images/8zxankRZpX.gif)
-![Image](/Images/fOR3N6Pvff.gif)
-
-##### [Viewport Array](/ViewportArray/src/ViewportArrayApp.cpp)
-Small sample showing the use of ```glViewportArrayv``` and ```gl_ViewportIndex``` to render to multiple viewports.
-
-![Image](/Images/D3aQZUpUP4.gif)
-
-##### [Wireframe Geometry Shader](/WireframeGeometryShader/src/WireframeGeometryShaderApp.cpp)
-Geometry and fragment shader for solid wireframe rendering. Mostly adapted from [Florian Boesch great post on barycentric coordinates](http://codeflow.org/entries/2012/aug/02/easy-wireframe-display-with-barycentric-coordinates/).
-
-![Image](/Images/YDbBnGu8UQ.gif)
-
+![Image](/../Images/r8dYbVGGWg.gif)
 
 
 ##### License
