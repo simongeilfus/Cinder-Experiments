@@ -1,4 +1,4 @@
-##### [Cascaded Shadow Mapping](/src/CascadedShadowMappingApp.cpp)
+##### [Cascaded Shadow Mapping](src/CascadedShadowMappingApp.cpp)
 ![Image](../Images/8zxankRZpX.gif)
 ![Image](../Images/fOR3N6Pvff.gif)
 

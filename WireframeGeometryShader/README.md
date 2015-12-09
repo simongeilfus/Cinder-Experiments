@@ -1,4 +1,4 @@
-##### [Wireframe Geometry Shader](/src/WireframeGeometryShaderApp.cpp)
+##### [Wireframe Geometry Shader](src/WireframeGeometryShaderApp.cpp)
 Geometry and fragment shader for solid wireframe rendering. Mostly adapted from [Florian Boesch great post on barycentric coordinates](http://codeflow.org/entries/2012/aug/02/easy-wireframe-display-with-barycentric-coordinates/).
 
 ![Image](../Images/YDbBnGu8UQ.gif)

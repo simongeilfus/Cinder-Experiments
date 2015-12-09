@@ -1,4 +1,4 @@
-##### [Viewport Array](/src/ViewportArrayApp.cpp)
+##### [Viewport Array](src/ViewportArrayApp.cpp)
 Small sample showing the use of ```glViewportArrayv``` and ```gl_ViewportIndex``` to render to multiple viewports.
 
 ![Image](../Images/D3aQZUpUP4.gif)

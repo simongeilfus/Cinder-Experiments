@@ -1,5 +1,5 @@
-##### [Exponential Shadow Mapping](/src/ExponentialShadowMapApp.cpp)
-![Image](/../Images/OPwIkI154Y.gif)
+##### [Exponential Shadow Mapping](src/ExponentialShadowMapApp.cpp)
+![Image](../Images/OPwIkI154Y.gif)
 
 
 

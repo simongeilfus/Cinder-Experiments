@@ -1,7 +1,7 @@
-##### [PBR Basics](/src/PBRBasicsApp.cpp)
+##### [PBR Basics](src/PBRBasicsApp.cpp)
 This sample show the basics of a physically based shading workflow. Mainly adapted from disney and epic papers on the subject. PBR without textures is not particularly interesting, but it's a good introduction.
 
-![Image](/../Images/MO6ufSrgB0.gif)
+![Image](../Images/MO6ufSrgB0.gif)
 
 
 ##### License

@@ -1,7 +1,7 @@
-##### [PBR Texturing Basics](/src/PBRTexturingBasicsApp.cpp)
+##### [PBR Texturing Basics](src/PBRTexturingBasicsApp.cpp)
 Basic use of textures in a physically based shading workflow.
 
-![Image](/../Images/U8jbuV7Ujv.gif)
+![Image](../Images/U8jbuV7Ujv.gif)
 
 
 ##### License
