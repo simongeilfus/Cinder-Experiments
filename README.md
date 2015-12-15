@@ -1,5 +1,5 @@
 ## Cinder Experiments
-Samples, experiments and other bits of code that don't deserve a repository on their own.
+A collection of experiments, samples and other bits of code.
 
 ***WORK IN PROGRESS - Currently updating everything to Cinder 0.9***
 
