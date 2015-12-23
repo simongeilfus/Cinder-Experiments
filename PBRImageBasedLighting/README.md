@@ -1,7 +1,8 @@
 ##### [PBR Image Based Lighting](src/PBRImageBasedLightingApp.cpp)
 Image Based Lighting Diffuse and Specular reflections. Uses Cubemaps created in [CmftStudio](https://github.com/dariomanesku/cmftStudio). This sample uses a full approximation as described on [this Unreal Engine blog post](https://www.unrealengine.com/blog/physically-based-shading-on-mobile).
 
-![Image](../Images/r8dYbVGGWg.gif)
+![Image](../Images/PBRImageBasedLighting0.jpg)
+![Image](../Images/PBRImageBasedLighting1.jpg)
 
 
 ##### License
