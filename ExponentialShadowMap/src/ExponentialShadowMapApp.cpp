@@ -9,14 +9,6 @@ using namespace ci;
 using namespace ci::app;
 using namespace std;
 
-// A few interesting links
-// http://advancedgraphics.marries.nl/presentationslides/13_exponential_shadow_maps.pdf
-// http://www.sunandblackcat.com/tipFullView.php?l=eng&topicid=35
-// http://nolimitsdesigns.com/tag/exponential-shadow-map/
-// http://web4.cs.ucl.ac.uk/staff/j.kautz/publications/esm_gi08.pdf
-// https://pixelstoomany.wordpress.com/2008/06/12/a-conceptually-simpler-way-to-derive-exponential-shadow-maps-sample-code/
-// http://www.olhovsky.com/2011/07/exponential-shadow-map-mFiltering-in-hlsl/
-
 class ExponentialShadowMapApp : public App {
 public:
 	ExponentialShadowMapApp();

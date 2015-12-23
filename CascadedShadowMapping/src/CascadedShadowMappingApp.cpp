@@ -10,13 +10,6 @@ using namespace ci;
 using namespace ci::app;
 using namespace std;
 
-// https://mynameismjp.wordpress.com/2013/09/10/shadow-maps/
-// http://http.developer.nvidia.com/GPUGems3/gpugems3_ch10.html
-// https://software.intel.com/en-us/articles/sample-distribution-shadow-maps
-// http://blogs.aerys.in/jeanmarc-leroux/2015/01/21/exponential-cascaded-shadow-mapping-with-webgl/
-// https://github.com/NVIDIAGameWorks/OpenGLSamples/blob/master/samples/gl4-maxwell/CascadedShadowMapping/CascadedShadowMappingRenderer.cpp
-
-
 typedef std::shared_ptr<class CascadedShadows> CascadedShadowsRef;
 
 class CascadedShadows {
