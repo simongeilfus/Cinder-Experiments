@@ -285,7 +285,7 @@ CascadedShadowsRef CascadedShadows::create()
 }
 
 CascadedShadows::CascadedShadows()
-: mResolution( 2048 ), mExpC( 120.0f ), mSplitLambda( 0.5f )
+: mResolution( 1024 ), mExpC( 120.0f ), mSplitLambda( 0.5f )
 {
 	// load shaders
 	auto format = gl::GlslProg::Format().vertex( loadAsset( "gaussian.vert" ) ).fragment( loadAsset( "gaussian.frag" ) ).geometry( loadAsset( "gaussian.geom" ) ).define( "KERNEL", "KERNEL_7x7_GAUSSIAN" );
