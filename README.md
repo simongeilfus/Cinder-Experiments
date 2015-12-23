@@ -44,7 +44,7 @@ The sample simply show how to use the different mipmap level of a texture to pro
 #### [Parallax Corrected Cubemap](/ParallaxCorrectedCubemap/src/ParallaxCorrectedCubemapApp.cpp)
 Cubemap environment mapping is the most straightforward way to add reflection to a scene. Usually cubemaps reflections represent infinitely far away reflections. This sample shows how to correct the texture lookup to have proper local reflections. This is not shown in this sample but this can also be used to fake small local light sources as well. The sample uses lightmapping to keep the code simple.
 
-Here's some interesting links on the subject :
+Here's some interesting links on the subject :  
 https://seblagarde.wordpress.com/2012/11/28/siggraph-2012-talk/
 https://seblagarde.wordpress.com/2012/09/29/image-based-lighting-approaches-and-parallax-corrected-cubemap/
 http://c0de517e.blogspot.be/2015/03/being-more-wrong-parallax-corrected.html
