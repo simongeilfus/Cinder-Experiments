@@ -2,8 +2,6 @@
 A collection of experiments, samples and other bits of code.
 
 #### [Cascaded Shadow Mapping](/CascadedShadowMapping/src/CascadedShadowMappingApp.cpp)
-![Image](/Images/CascadedShadowMapping0.jpg)
-![Image](/Images/CascadedShadowMapping1.jpg)  
 Cascaded Shadow Mapping is a common method to get high resolution shadows near the viewer. This sample shows the very basic way of using this technique by splitting the frustum into different shadow maps. CSM has its own issues but usually provides better shadow resolution near the viewer and lower resolutions far away. The sample uses ESM for the shadowing algorithm (see the [ESM sample](/ExponentialShadowMap) for more infos about ESM).  
 
 One easy improvement to this sample is to use the approach shown in the [GpuParrallelReduction sample](/GpuParrallelReduction) to find the minimum and maximum depth of the scene and use those values to better fit what the viewer see from the scene. Other approaches involve, better frustum culling, better splitting scheme or more stable samples distributions.
@@ -15,14 +13,17 @@ https://software.intel.com/en-us/articles/sample-distribution-shadow-maps
 http://blogs.aerys.in/jeanmarc-leroux/2015/01/21/exponential-cascaded-shadow-mapping-with-webgl/
 https://github.com/NVIDIAGameWorks/OpenGLSamples/blob/master/samples/gl4-maxwell/CascadedShadowMapping/CascadedShadowMappingRenderer.cpp  
 
-##### [Color Grading](/ColorGrading/src/ColorGradingApp.cpp)
+![Image](/Images/CascadedShadowMapping0.jpg)
+![Image](/Images/CascadedShadowMapping1.jpg)
+
+#### [Color Grading](/ColorGrading/src/ColorGradingApp.cpp)
 This sample shows a really easy way to add proper color grading to your apps. The trick is to store a 3d color lookup table and to use it to filter the output of a fragment shader. The nice thing about it is that you can use Photoshop or any other editing tool to create the right look and then replicate the exact same grading at a really low cost (the cost of one extra texture sample per fragment).  
 
 Press 'e' top open photoshop and live edit the color grading. When the file is saved in photoshop, the app automatically reloads the color grading.  
 
 ![Image](/Images/ColorGrading.jpg)
 
-##### [Exponential Shadow Mapping](/ExponentialShadowMap/src/ExponentialShadowMapApp.cpp)
+#### [Exponential Shadow Mapping](/ExponentialShadowMap/src/ExponentialShadowMapApp.cpp)
 Shadow Mapping is a vast subject and every approach comes with their own downsides. Basic shadow mapping have precision, aliasing,shadow acne and peter-panning issues, variance shadow mapping improves this but introduces light bleeding, etc... Exponential shadow mapping is an easy and inexpensive way to get rid of most of the above, but it (of course) comes with its own issues as well. The nice thing is that the shadow map can be inexpensively filtered in screenspace to produce softer shadows. On the other hand the main issue with ESM is that the closer a shadow is to the caster the brighter the shadow will be. Which may look weird in some cases. This is more or less fixed by using an "over-darkening" value but it doesn't work all the time.  
 
 A few interesting links :  
@@ -35,43 +36,43 @@ http://www.olhovsky.com/2011/07/exponential-shadow-map-mFiltering-in-hlsl/
 
 ![Image](/Images/ExponentialShadowMap.jpg)
 
-##### [Gpu Parrallel Reduction](/GpuParrallelReduction/src/GpuParrallelReductionApp.cpp)
+#### [Gpu Parrallel Reduction](/GpuParrallelReduction/src/GpuParrallelReductionApp.cpp)
 Not a particularly exciting sample but a usefull technique. It can be use to gatter the average brightness of a scene and improve tonemapping, or to get the minimum and maximal depth and improve shadow mapping algorithm, etc... 
 
 The sample simply show how to use the different mipmap level of a texture to progressively reduce its size until its reasonable to copy it back to the cpu and read the results.
 
-##### [Parallax Corrected Cubemap](/ParallaxCorrectedCubemap/src/ParallaxCorrectedCubemapApp.cpp)
+#### [Parallax Corrected Cubemap](/ParallaxCorrectedCubemap/src/ParallaxCorrectedCubemapApp.cpp)
 ![Image](/Images/ParallaxCorrectedCubemap.jpg)
 
-##### [PBR Basics](/PBRBasics/src/PBRBasicsApp.cpp)
+#### [PBR Basics](/PBRBasics/src/PBRBasicsApp.cpp)
 This sample show the basics of a physically based shading workflow. Mainly adapted from disney and epic papers on the subject. PBR without textures is not particularly interesting, but it's a good introduction.
 
 ![Image](/Images/PBRBasics.jpg)
 
-##### [PBR Image Based Lighting](/PBRImageBasedLighting/src/PBRImageBasedLightingApp.cpp)
+#### [PBR Image Based Lighting](/PBRImageBasedLighting/src/PBRImageBasedLightingApp.cpp)
 Image Based Lighting Diffuse and Specular reflections. Uses Cubemaps created in [CmftStudio](https://github.com/dariomanesku/cmftStudio). This sample uses a full approximation as described on [this Unreal Engine blog post](https://www.unrealengine.com/blog/physically-based-shading-on-mobile).
 
 ![Image](/Images/PBRImageBasedLighting0.jpg)
 ![Image](/Images/PBRImageBasedLighting1.jpg)
 
-##### [PBR Texturing Basics](/PBRTexturingBasics/src/PBRTexturingBasicsApp.cpp)
+#### [PBR Texturing Basics](/PBRTexturingBasics/src/PBRTexturingBasicsApp.cpp)
 Basic use of textures in a physically based shading workflow.
 
 ![Image](/Images/PBRTexturingBasics0.jpg)
 ![Image](/Images/PBRTexturingBasics1.jpg)
 
-##### [Tessellated Noise](/TessellatedNoise/src/TessellatedNoiseApp.cpp)
+#### [Tessellated Noise](/TessellatedNoise/src/TessellatedNoiseApp.cpp)
 ![Image](/Images/TessellatedNoise.jpg)
 
-##### [Tessellation Shader](/TessellationShader/src/TessellationShaderApp.cpp)
+#### [Tessellation Shader](/TessellationShader/src/TessellationShaderApp.cpp)
 ![Image](/Images/TessellationShader.jpg)
 
-##### [Viewport Array](/ViewportArray/src/ViewportArrayApp.cpp)
+#### [Viewport Array](/ViewportArray/src/ViewportArrayApp.cpp)
 Small sample showing the use of ```glViewportArrayv``` and ```gl_ViewportIndex``` to render to multiple viewports.
 
 ![Image](/Images/ViewportArray.jpg)
 
-##### [Wireframe Geometry Shader](/WireframeGeometryShader/src/WireframeGeometryShaderApp.cpp)
+#### [Wireframe Geometry Shader](/WireframeGeometryShader/src/WireframeGeometryShaderApp.cpp)
 Geometry and fragment shader for solid wireframe rendering. Mostly adapted from [Florian Boesch great post on barycentric coordinates](http://codeflow.org/entries/2012/aug/02/easy-wireframe-display-with-barycentric-coordinates/).
 
 ![Image](/Images/WireframeGeometryShader.jpg)
