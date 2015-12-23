@@ -36,6 +36,11 @@ http://www.olhovsky.com/2011/07/exponential-shadow-map-mFiltering-in-hlsl/
 
 ![Image](/Images/ExponentialShadowMap.jpg)
 
+##### [Gpu Parrallel Reduction](/GpuParrallelReduction/src/GpuParrallelReductionApp.cpp)
+Not a particularly exciting sample but a usefull technique. It can be use to gatter the average brightness of a scene and improve tonemapping, or to get the minimum and maximal depth and improve shadow mapping algorithm, etc... 
+
+The sample simply show how to use the different mipmap level of a texture to progressively reduce its size until its reasonable to copy it back to the cpu and read the results.
+
 ##### [Parallax Corrected Cubemap](/ParallaxCorrectedCubemap/src/ParallaxCorrectedCubemapApp.cpp)
 ![Image](/Images/ParallaxCorrectedCubemap.jpg)
 

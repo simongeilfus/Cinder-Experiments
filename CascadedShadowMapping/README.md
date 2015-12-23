@@ -1,6 +1,17 @@
 ##### [Cascaded Shadow Mapping](src/CascadedShadowMappingApp.cpp)
-![Image](../Images/8zxankRZpX.gif)
-![Image](../Images/fOR3N6Pvff.gif)
+Cascaded Shadow Mapping is a common method to get high resolution shadows near the viewer. This sample shows the very basic way of using this technique by splitting the frustum into different shadow maps. CSM has its own issues but usually provides better shadow resolution near the viewer and lower resolutions far away. The sample uses ESM for the shadowing algorithm (see the [ESM sample](/ExponentialShadowMap) for more infos about ESM).  
+
+One easy improvement to this sample is to use the approach shown in the [GpuParrallelReduction sample](/GpuParrallelReduction) to find the minimum and maximum depth of the scene and use those values to better fit what the viewer see from the scene. Other approaches involve, better frustum culling, better splitting scheme or more stable samples distributions.
+
+Some references :  
+https://mynameismjp.wordpress.com/2013/09/10/shadow-maps/
+http://http.developer.nvidia.com/GPUGems3/gpugems3_ch10.html
+https://software.intel.com/en-us/articles/sample-distribution-shadow-maps
+http://blogs.aerys.in/jeanmarc-leroux/2015/01/21/exponential-cascaded-shadow-mapping-with-webgl/
+https://github.com/NVIDIAGameWorks/OpenGLSamples/blob/master/samples/gl4-maxwell/CascadedShadowMapping/CascadedShadowMappingRenderer.cpp  
+
+![Image](../Images/CascadedShadowMapping0.jpg)
+![Image](../Images/CascadedShadowMapping1.jpg)
 
 
 ##### License

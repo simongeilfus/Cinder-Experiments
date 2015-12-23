@@ -1,6 +1,15 @@
-##### [Exponential Shadow Mapping](src/ExponentialShadowMapApp.cpp)
-![Image](../Images/OPwIkI154Y.gif)
+##### [Exponential Shadow Mapping](src/ExponentialShadowMapApp.cpp)  
+Shadow Mapping is a vast subject and every approach comes with their own downsides. Basic shadow mapping have precision, aliasing,shadow acne and peter-panning issues, variance shadow mapping improves this but introduces light bleeding, etc... Exponential shadow mapping is an easy and inexpensive way to get rid of most of the above, but it (of course) comes with its own issues as well. The nice thing is that the shadow map can be inexpensively filtered in screenspace to produce softer shadows. On the other hand the main issue with ESM is that the closer a shadow is to the caster the brighter the shadow will be. Which may look weird in some cases. This is more or less fixed by using an "over-darkening" value but it doesn't work all the time.  
 
+A few interesting links :  
+http://advancedgraphics.marries.nl/presentationslides/13_exponential_shadow_maps.pdf
+http://www.sunandblackcat.com/tipFullView.php?l=eng&topicid=35
+http://nolimitsdesigns.com/tag/exponential-shadow-map/
+http://web4.cs.ucl.ac.uk/staff/j.kautz/publications/esm_gi08.pdf
+https://pixelstoomany.wordpress.com/2008/06/12/a-conceptually-simpler-way-to-derive-exponential-shadow-maps-sample-code/
+http://www.olhovsky.com/2011/07/exponential-shadow-map-mFiltering-in-hlsl/
+
+![Image](../Images/ExponentialShadowMap.jpg)
 
 
 ##### License
