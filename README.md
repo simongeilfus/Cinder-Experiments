@@ -3,24 +3,26 @@ A collection of experiments, samples and other bits of code.
 
 ##### [Cascaded Shadow Mapping](/CascadedShadowMapping/src/CascadedShadowMappingApp.cpp)
 Cascaded Shadow Mapping is a common method to get high resolution shadows near the viewer. This sample shows the very basic way of using this technique by splitting the frustum into different shadow maps. CSM has its own issues but usually provides better shadow resolution near the viewer and lower resolutions far away.  
-![Image](/Images/CascadedShadowMapping0.jpg)
-![Image](/Images/CascadedShadowMapping1.jpg)
 
-Here's a few references :  
+A few references :  
 https://mynameismjp.wordpress.com/2013/09/10/shadow-maps/
 http://http.developer.nvidia.com/GPUGems3/gpugems3_ch10.html
 https://software.intel.com/en-us/articles/sample-distribution-shadow-maps
 http://blogs.aerys.in/jeanmarc-leroux/2015/01/21/exponential-cascaded-shadow-mapping-with-webgl/
-https://github.com/NVIDIAGameWorks/OpenGLSamples/blob/master/samples/gl4-maxwell/CascadedShadowMapping/CascadedShadowMappingRenderer.cpp
+https://github.com/NVIDIAGameWorks/OpenGLSamples/blob/master/samples/gl4-maxwell/CascadedShadowMapping/CascadedShadowMappingRenderer.cpp  
+
+![Image](/Images/CascadedShadowMapping0.jpg)
+![Image](/Images/CascadedShadowMapping1.jpg)
 
 ##### [Color Grading](/ColorGrading/src/ColorGradingApp.cpp)
 This sample shows a really easy way to add proper color grading to your apps. The trick is to store a 3d color lookup table and to use it to filter the output of a fragment shader. The nice thing about it is that you can use Photoshop or any other editing tool to create the right look and then replicate the exact same grading at a really low cost (the cost of one extra texture sample per fragment).  
 
 Press 'e' top open photoshop and live edit the color grading. When the file is saved in photoshop, the app automatically reloads the color grading.  
+
 ![Image](/Images/ColorGrading.jpg)
 
 ##### [Exponential Shadow Mapping](/ExponentialShadowMap/src/ExponentialShadowMapApp.cpp)
-![Image](/Images/ExponentialShadowMap.jpg)
+Exponential Shadow Mapping  
 
 A few interesting links :  
 http://advancedgraphics.marries.nl/presentationslides/13_exponential_shadow_maps.pdf
@@ -29,6 +31,8 @@ http://nolimitsdesigns.com/tag/exponential-shadow-map/
 http://web4.cs.ucl.ac.uk/staff/j.kautz/publications/esm_gi08.pdf
 https://pixelstoomany.wordpress.com/2008/06/12/a-conceptually-simpler-way-to-derive-exponential-shadow-maps-sample-code/
 http://www.olhovsky.com/2011/07/exponential-shadow-map-mFiltering-in-hlsl/
+
+![Image](/Images/ExponentialShadowMap.jpg)
 
 ##### [Parallax Corrected Cubemap](/ParallaxCorrectedCubemap/src/ParallaxCorrectedCubemapApp.cpp)
 ![Image](/Images/ParallaxCorrectedCubemap.jpg)
