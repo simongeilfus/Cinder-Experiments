@@ -2,9 +2,10 @@
 A collection of experiments, samples and other bits of code.
 
 ##### [Cascaded Shadow Mapping](/CascadedShadowMapping/src/CascadedShadowMappingApp.cpp)
-Cascaded Shadow Mapping is a common method to get high resolution shadows near the viewer. This sample shows the very basic way of using this technique by splitting the frustum into different shadow maps. CSM has its own issues but usually provides better shadow resolution near the viewer and lower resolutions far away.  
+Cascaded Shadow Mapping is a common method to get high resolution shadows near the viewer. This sample shows the very basic way of using this technique by splitting the frustum into different shadow maps. CSM has its own issues but usually provides better shadow resolution near the viewer and lower resolutions far away. The sample uses ESM for the shadowing algorithm (see the [ESM sample](/ExponentialShadowMap) for more infos about ESM).  
+One easy improvement to this sample is to use the approach shown in the [GpuParrallelReduction sample](/GpuParrallelReduction) to find the minimum and maximum depth of the scene and use those values to better fit what the viewer see from the scene. Other approaches involve a better splitting scheme or more stable samples distributions.
 
-A few references :  
+Some references :  
 https://mynameismjp.wordpress.com/2013/09/10/shadow-maps/
 http://http.developer.nvidia.com/GPUGems3/gpugems3_ch10.html
 https://software.intel.com/en-us/articles/sample-distribution-shadow-maps
@@ -22,7 +23,7 @@ Press 'e' top open photoshop and live edit the color grading. When the file is s
 ![Image](/Images/ColorGrading.jpg)
 
 ##### [Exponential Shadow Mapping](/ExponentialShadowMap/src/ExponentialShadowMapApp.cpp)
-Exponential Shadow Mapping  
+Shadow Mapping is a vast subject and every approach comes with their own downsides. Basic shadow mapping have precision and shadow acne issues, peter-panning, variance shadow mapping introduces light bleeding, etc... Exponential shadow mapping is an easy and inexpensive way to get rid of most of the above, but it (of course) comes with its own issues as well. The nice thing is that the shadow map can easily be filtered to produce softer shadows. On the other hand the main issue with ESM is that the closer a shadow is to the caster the brighter the shadow will be. Which may look weird in some cases. This is more or less fixed by using an "over-darkening" value but it doesn't work all the time.  
 
 A few interesting links :  
 http://advancedgraphics.marries.nl/presentationslides/13_exponential_shadow_maps.pdf
