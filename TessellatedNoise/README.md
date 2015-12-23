@@ -1,4 +1,7 @@
-##### Tessellation Noise
+#### [Tessellation Noise](src/TessellationNoiseApp.cpp)
+Useless update to the [Tessellation Shader sample](../TessellationShader/). Just playing around with noise sums in the vertex shader. Shading is absolutely wrong.  
+
+![Image](../Images/TessellatedNoise.jpg)
 
 
 ##### License

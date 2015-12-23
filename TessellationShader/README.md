@@ -1,4 +1,6 @@
-##### Tessellation Shader
+#### [Tessellation Shader](src/TessellationShaderApp.cpp)
+Small sample implementing Philip Rideout article on ["Triangle Tessellation with OpenGL 4.0"](http://prideout.net/blog/?p=48).  
+![Image](../Images/TessellatedShader.jpg)
 
 
 ##### License

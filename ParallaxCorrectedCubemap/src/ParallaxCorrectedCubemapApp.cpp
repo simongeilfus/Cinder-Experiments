@@ -21,14 +21,6 @@
  POSSIBILITY OF SUCH DAMAGE.
  */
 
-// https://seblagarde.wordpress.com/2012/11/28/siggraph-2012-talk/
-// https://seblagarde.wordpress.com/2012/09/29/image-based-lighting-approaches-and-parallax-corrected-cubemap/
-// http://c0de517e.blogspot.be/2015/03/being-more-wrong-parallax-corrected.html
-// http://www.clicktorelease.com/blog/making-of-cruciform
-// http://gpupro.blogspot.be/2013/02/gpu-pro-4-practical-planar-reflections.html
-// http://learnopengl.com/#!Advanced-OpenGL/Cubemaps
-// http://www.frostbite.com/wp-content/uploads/2014/11/course_notes_moving_frostbite_to_pbr.pdf
-
 #include "cinder/app/App.h"
 #include "cinder/app/RendererGl.h"
 #include "cinder/gl/gl.h"

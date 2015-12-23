@@ -1,4 +1,4 @@
-##### [Color Grading](src/ColorGradingApp.cpp)
+#### [Color Grading](src/ColorGradingApp.cpp)
 This sample shows a really easy way to add proper color grading to your apps. The trick is to store a 3d color lookup table and to use it to filter the output of a fragment shader. The nice thing about it is that you can use Photoshop or any other editing tool to create the right look and then replicate the exact same grading at a really low cost (the cost of one extra texture sample per fragment).  
 
 Press 'e' top open photoshop and live edit the color grading. When the file is saved in photoshop, the app automatically reloads the color grading.  

@@ -1,7 +1,7 @@
-##### [Viewport Array](src/ViewportArrayApp.cpp)
-Small sample showing the use of ```glViewportArrayv``` and ```gl_ViewportIndex``` to render to multiple viewports.
+#### [Viewport Array](src/ViewportArrayApp.cpp)
+Small sample showing the use of ```glViewportArrayv``` and ```gl_ViewportIndex``` to render to multiple viewports. ```glViewportArrayv``` is a nice way to specifies a list of viewports that can be later used in the geometry shader. By setting gl_ViewportIndex in the geometry shader you can re-direct your drawing calls to a specific viewport. Used along arrays of projections and view matrices it really ease the setup of a multiple viewport / 3d editor like view.  
 
-![Image](../Images/D3aQZUpUP4.gif)
+![Image](../Images/ViewportArray.jpg)
 
 
 

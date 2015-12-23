@@ -42,6 +42,17 @@ Not a particularly exciting sample but a usefull technique. It can be use to gat
 The sample simply show how to use the different mipmap level of a texture to progressively reduce its size until its reasonable to copy it back to the cpu and read the results.
 
 #### [Parallax Corrected Cubemap](/ParallaxCorrectedCubemap/src/ParallaxCorrectedCubemapApp.cpp)
+Cubemap environment mapping is the most straightforward way to add reflection to a scene. Usually cubemaps reflections represent infinitely far away reflections. This sample shows how to correct the texture lookup to have proper local reflections. This is not shown in this sample but this can also be used to fake small local light sources as well. The sample uses lightmapping to keep the code simple.
+
+Here's some interesting links on the subject :
+https://seblagarde.wordpress.com/2012/11/28/siggraph-2012-talk/
+https://seblagarde.wordpress.com/2012/09/29/image-based-lighting-approaches-and-parallax-corrected-cubemap/
+http://c0de517e.blogspot.be/2015/03/being-more-wrong-parallax-corrected.html
+http://www.clicktorelease.com/blog/making-of-cruciform
+http://gpupro.blogspot.be/2013/02/gpu-pro-4-practical-planar-reflections.html
+http://learnopengl.com/#!Advanced-OpenGL/Cubemaps
+http://www.frostbite.com/wp-content/uploads/2014/11/course_notes_moving_frostbite_to_pbr.pdf
+
 ![Image](/Images/ParallaxCorrectedCubemap.jpg)
 
 #### [PBR Basics](/PBRBasics/src/PBRBasicsApp.cpp)
@@ -62,13 +73,17 @@ Basic use of textures in a physically based shading workflow.
 ![Image](/Images/PBRTexturingBasics1.jpg)
 
 #### [Tessellated Noise](/TessellatedNoise/src/TessellatedNoiseApp.cpp)
+Useless update to the [Tessellation Shader sample](/TessellationShader/). Just playing around with noise sums in the vertex shader. Shading is absolutely wrong.  
+
 ![Image](/Images/TessellatedNoise.jpg)
 
 #### [Tessellation Shader](/TessellationShader/src/TessellationShaderApp.cpp)
+Small sample implementing Philip Rideout article on ["Triangle Tessellation with OpenGL 4.0"](http://prideout.net/blog/?p=48).  
+
 ![Image](/Images/TessellationShader.jpg)
 
 #### [Viewport Array](/ViewportArray/src/ViewportArrayApp.cpp)
-Small sample showing the use of ```glViewportArrayv``` and ```gl_ViewportIndex``` to render to multiple viewports.
+Small sample showing the use of ```glViewportArrayv``` and ```gl_ViewportIndex``` to render to multiple viewports. ```glViewportArrayv``` is a nice way to specifies a list of viewports that can be later used in the geometry shader. By setting gl_ViewportIndex in the geometry shader you can re-direct your drawing calls to a specific viewport. Used along arrays of projections and view matrices it really ease the setup of a multiple viewport / 3d editor like view.  
 
 ![Image](/Images/ViewportArray.jpg)
 
