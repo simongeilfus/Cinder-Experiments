@@ -1,5 +1,5 @@
 ## Cinder Experiments
-A collection of experiments, samples and other bits of code.
+A collection of experiments, samples and other bits of code. (Samples have been tested with Cinder 0.9 on MacOSX and Windows with a ATI Gpu).
 
 #### [Cascaded Shadow Mapping](/CascadedShadowMapping/src/CascadedShadowMappingApp.cpp)
 Cascaded Shadow Mapping is a common method to get high resolution shadows near the viewer. This sample shows the very basic way of using this technique by splitting the frustum into different shadow maps. CSM has its own issues but usually provides better shadow resolution near the viewer and lower resolutions far away. The sample uses ESM for the shadowing algorithm (see the [ESM sample](/ExponentialShadowMap) for more infos about ESM).  
