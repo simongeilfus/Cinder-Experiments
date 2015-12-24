@@ -9,6 +9,11 @@ using namespace ci;
 using namespace ci::app;
 using namespace std;
 
+#if defined( CINDER_MSW )
+	#define M_PI_2 M_PI / 2.0
+	#define M_PI_4 M_PI / 4.0
+#endif
+
 class ExponentialShadowMapApp : public App {
 public:
 	ExponentialShadowMapApp();
@@ -109,36 +114,36 @@ void ExponentialShadowMapApp::createScene()
 	};
 	// corresponding materials
 	vector<Material> materials = {
-		{ Color( 1.0f, 1.0f, 1.0f ), 0.0005f, 0.0f },		// Shinny Plastic Sphere
-		{ Color( 1.0f, 1.0f, 1.0f ), 0.25f, 0.0f },			// White Cube
-		{ Color( 1.0f, 0.766f, 0.336f ), 0.0005f, 0.99f },	// Golden Teapot
-		{ Color( 1.0f, 0.766f, 0.336f ), 0.0005f, 0.99f },	// Golden Teapot Cork!
-		{ Color( 1.0f, 1.0f, 1.0f ), 0.0005f, 0.0f },		// Shinny Plastic Plane
-		{ Color( 0.672, 0.637, 0.585 ), 0.005f, 0.99f },	// Platinium Capsule
-		{ Color( 1.0f, 1.0f, 1.0f ), 0.0005f, 0.0f },		// Plastic Icosahedron
-		{ Color( 0.913f, 0.921f, 0.925f ), 0.005f, 0.98f },	// Aluminium Wire sphere
-		{ Color( 0.913f, 0.921f, 0.925f ), 0.005f, 0.98f },
-		{ Color( 0.913f, 0.921f, 0.925f ), 0.005f, 0.98f },
-		{ Color( 0.913f, 0.921f, 0.925f ), 0.005f, 0.98f },
-		{ Color( 0.913f, 0.921f, 0.925f ), 0.005f, 0.98f },
-		{ Color( 0.913f, 0.921f, 0.925f ), 0.005f, 0.98f },
-		{ Color( 0.913f, 0.921f, 0.925f ), 0.005f, 0.98f },
-		{ Color( 0.913f, 0.921f, 0.925f ), 0.005f, 0.98f },
-		{ Color( 0.913f, 0.921f, 0.925f ), 0.005f, 0.98f },
-		{ Color( 0.955f, 0.637f, 0.538f ), 0.0025f, 0.98f },// Copper Helix
-		{ Color( 0.972f, 0.960f, 0.915f ), 0.0005f, 0.98f },// Silver Torus Knot
-		{ Color( 1.0f, 1.0f, 1.0f ), 0.5f, 0.0f }			// Rough Floor
+		make_tuple( Color( 1.0f, 1.0f, 1.0f ), 0.0005f, 0.0f ),		// Shinny Plastic Sphere
+		make_tuple( Color( 1.0f, 1.0f, 1.0f ), 0.25f, 0.0f ),		// White Cube
+		make_tuple( Color( 1.0f, 0.766f, 0.336f ), 0.0005f, 0.99f ),// Golden Teapot
+		make_tuple( Color( 1.0f, 0.766f, 0.336f ), 0.0005f, 0.99f ),// Golden Teapot Cork!
+		make_tuple( Color( 1.0f, 1.0f, 1.0f ), 0.0005f, 0.0f ),		// Shinny Plastic Plane
+		make_tuple( Color( 0.672, 0.637, 0.585 ), 0.005f, 0.99f ),	// Platinium Capsule
+		make_tuple( Color( 1.0f, 1.0f, 1.0f ), 0.0005f, 0.0f ),		// Plastic Icosahedron
+		make_tuple( Color( 0.913f, 0.921f, 0.925f ), 0.005f, 0.98f ),// Aluminium Wire sphere
+		make_tuple( Color( 0.913f, 0.921f, 0.925f ), 0.005f, 0.98f ),
+		make_tuple( Color( 0.913f, 0.921f, 0.925f ), 0.005f, 0.98f ),
+		make_tuple( Color( 0.913f, 0.921f, 0.925f ), 0.005f, 0.98f ),
+		make_tuple( Color( 0.913f, 0.921f, 0.925f ), 0.005f, 0.98f ),
+		make_tuple( Color( 0.913f, 0.921f, 0.925f ), 0.005f, 0.98f ),
+		make_tuple( Color( 0.913f, 0.921f, 0.925f ), 0.005f, 0.98f ),
+		make_tuple( Color( 0.913f, 0.921f, 0.925f ), 0.005f, 0.98f ),
+		make_tuple( Color( 0.913f, 0.921f, 0.925f ), 0.005f, 0.98f ),
+		make_tuple( Color( 0.955f, 0.637f, 0.538f ), 0.0025f, 0.98f ),// Copper Helix
+		make_tuple( Color( 0.972f, 0.960f, 0.915f ), 0.0005f, 0.98f ),// Silver Torus Knot
+		make_tuple( Color( 1.0f, 1.0f, 1.0f ), 0.5f, 0.0f )			// Rough Floor
 	};
 	
 	// for each source create gl::Batch for regular rendering and another gl::Batch for rendering the shadow map
 	auto shader = gl::GlslProg::create( gl::GlslProg::Format().vertex( loadAsset( "shader.vert" ) ).fragment( loadAsset( "shader.frag" ) ) );
 	auto shadowMapShader = gl::GlslProg::create( gl::GlslProg::Format().vertex( loadAsset( "shadowmap.vert" ) ).fragment( loadAsset( "shadowmap.frag" ) ) );
 	for( size_t i = 0; i < sources.size(); ++i ) {
-		mSceneObjects.push_back( {
+		mSceneObjects.push_back( make_tuple(
 			gl::Batch::create( sources[i], shader ),
 			gl::Batch::create( sources[i], shadowMapShader ),
 			materials[i]
-		} );
+		) );
 	}
 }
 
