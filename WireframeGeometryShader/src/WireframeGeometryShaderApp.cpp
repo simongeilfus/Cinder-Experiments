@@ -23,7 +23,7 @@ WireframeGeometryShaderApp::WireframeGeometryShaderApp()
 	.geometry( loadAsset( "shader.geom" ) );
 	
 	auto shader = gl::GlslProg::create( format );
-	mBatch		= gl::Batch::create( geom::TorusKnot() >> geom::ColorFromAttrib( geom::NORMAL, []( vec3 n ) {
+	mBatch = gl::Batch::create(geom::TorusKnot() >> geom::ColorFromAttrib(geom::NORMAL, (const std::function<Colorf(vec3)> &) [](vec3 n) {
 		return Colorf( n.x, n.y, n.z ); } ), shader );
 	
 	// enable depth testing

@@ -35,7 +35,7 @@ void ViewportArrayApp::setup()
 	// create the teapot batch with our multicast geometry shader
 	auto shForm = gl::GlslProg::Format().vertex( loadAsset( "shader.vert" ) ).geometry( loadAsset( "shader.geom" ) ).fragment( loadAsset( "shader.frag" ) );
 	auto shader = gl::GlslProg::create( shForm );
-	auto geom	= geom::Teapot().subdivisions( 10 ) >> geom::ColorFromAttrib( geom::Attrib::NORMAL, [](vec3 v){ return Colorf( v.x, v.y, v.z ); } );
+	auto geom = geom::Teapot().subdivisions(10) >> geom::ColorFromAttrib(geom::Attrib::NORMAL, (const std::function<Colorf(vec3)>&) [](vec3 v){ return Colorf(v.x, v.y, v.z); });
 	mTeapot		= gl::Batch::create( geom, shader );
 	
 	// create 4 cameras randomly spread around the teapot
