@@ -67,8 +67,8 @@ void ColorGradingApp::draw()
 	mColorGradingProg->uniform( "uDiagonal", mDiagonal );
 	
 	gl::drawSolidRect( getWindowBounds() );
-	
-#ifndef CINDER_COCOA_TOUCH
+
+#if defined( CINDER_COCOA )
 	gl::ScopedBlendAlpha alphaBlending;
 	gl::drawString( "Press 'e' to edit the color grading lut", vec2( 15 ) );
 #endif
@@ -76,6 +76,7 @@ void ColorGradingApp::draw()
 
 void ColorGradingApp::keyDown( KeyEvent event )
 {
+#if defined( CINDER_COCOA )
 	switch ( event.getCode() ) {
 		case KeyEvent::KEY_e:
 			// export a new lut file to be edited in photoshop/gimp
@@ -87,6 +88,7 @@ void ColorGradingApp::keyDown( KeyEvent event )
 			} );
 			break;
 	}
+#endif
 }
 void ColorGradingApp::mouseDrag( MouseEvent event )
 {
@@ -128,7 +130,8 @@ void ColorGradingApp::writeLookupTable( const ci::DataTargetRef &lutImage, const
 		writeImage( lutImage, screenSurface, ImageTarget::Options().quality(1.0f) );
 	}
 	else writeImage( lutImage, lutSurface, ImageTarget::Options().quality(1.0f) );
-	
+
+#if defined( CINDER_COCOA )
 	// try to find photoshop and open it
 	if( tryToOpenInPhotoshop ){
 		
@@ -147,6 +150,7 @@ void ColorGradingApp::writeLookupTable( const ci::DataTargetRef &lutImage, const
 			system( command.c_str() );
 		}
 	}
+#endif
 }
 
 CINDER_APP( ColorGradingApp, RendererGl, []( App::Settings* settings ){
