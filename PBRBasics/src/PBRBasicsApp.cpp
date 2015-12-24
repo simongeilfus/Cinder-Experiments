@@ -197,12 +197,12 @@ void PBRBasicsApp::renderAnnotations()
 	angle = atan2( ( getWindowHeight() - center.y ) - ( getWindowHeight() - metalEnd.y ), center.x - metalEnd.x );
 	gl::pushModelMatrix();
 	gl::translate( vec2( metal.x, getWindowHeight() - metal.y - 10.0f ) );
-	gl::rotate( angle + ( abs( angle ) < M_PI_2 ? 0.0f : M_PI ) );
+	gl::rotate( angle + ( abs( angle ) < M_PI * 0.5f ? 0.0f : M_PI ) );
 	gl::drawStringCentered( "Metal", vec2( 0.0f ), ColorA( 1.0f, 1.0f, 1.0f, pitchFade ), mFont );
 	gl::popModelMatrix();
 	gl::pushModelMatrix();
 	gl::translate( vec2( metalEnd.x, getWindowHeight() - metalEnd.y ) );
-	gl::rotate( angle + ( abs( angle ) < M_PI_2 ? 0.0f : M_PI ) );
+	gl::rotate(angle + (abs(angle) < M_PI * 0.5f ? 0.0f : M_PI));
 	gl::drawStringCentered( to_string( mMetallic ).substr( 0, 3 ), vec2( 0.0f ), ColorA( 1.0f, 1.0f, 1.0f, pitchFade ), mFont );
 	gl::popModelMatrix();
 }
