@@ -1,32 +1,33 @@
 /*
-Cinder-ImGui
-This code is intended for use with Cinder
-and Omar Cornut ImGui C++ libraries.
-
-http://libcinder.org
-https://github.com/ocornut
-
-Copyright (c) 2013-2015, Simon Geilfus - All rights reserved.
-
-Redistribution and use in source and binary forms, with or without modification, are permitted provided that
-the following conditions are met:
-
-* Redistributions of source code must retain the above copyright notice, this list of conditions and
-the following disclaimer.
-* Redistributions in binary form must reproduce the above copyright notice, this list of conditions and
-the following disclaimer in the documentation and/or other materials provided with the distribution.
-
-THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED
-WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A
-PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR
-ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED
-TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION)
-HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING
-NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
-POSSIBILITY OF SUCH DAMAGE.
-*/
+ Cinder-ImGui
+ This code is intended for use with Cinder
+ and Omar Cornut ImGui C++ libraries.
+ 
+ http://libcinder.org
+ https://github.com/ocornut
+ 
+ Copyright (c) 2013-2015, Simon Geilfus - All rights reserved.
+ 
+ Redistribution and use in source and binary forms, with or without modification, are permitted provided that
+ the following conditions are met:
+ 
+ * Redistributions of source code must retain the above copyright notice, this list of conditions and
+ the following disclaimer.
+ * Redistributions in binary form must reproduce the above copyright notice, this list of conditions and
+ the following disclaimer in the documentation and/or other materials provided with the distribution.
+ 
+ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED
+ WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A
+ PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR
+ ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED
+ TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION)
+ HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING
+ NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+ POSSIBILITY OF SUCH DAMAGE.
+ */
 
 #include "CinderImGui.h"
+#include "imgui_internal.h"
 
 #include "cinder/app/App.h"
 #include "cinder/gl/Scoped.h"
@@ -50,18 +51,18 @@ namespace ImGui {
 // static variables
 static bool sInitialized = false;
 
-	
+
 ImGui::Options::Options()
 : mWindow( ci::app::getWindow() ),
 mAutoRender( true )
 {
-    darkTheme();
+	darkTheme();
 }
 
 ImGui::Options& ImGui::Options::window( const ci::app::WindowRef &window )
 {
-    mWindow = window;
-    return *this;
+	mWindow = window;
+	return *this;
 }
 ImGui::Options& ImGui::Options::autoRender( bool autoRender )
 {
@@ -71,94 +72,94 @@ ImGui::Options& ImGui::Options::autoRender( bool autoRender )
 
 ImGui::Options& ImGui::Options::font( const ci::fs::path &fontPath, float size )
 {
-    mFonts = { { fontPath, size } };
-    return *this;
+	mFonts = { { fontPath, size } };
+	return *this;
 }
 ImGui::Options& ImGui::Options::fonts( const std::vector<std::pair<ci::fs::path,float>> &fonts )
 {
-    mFonts = fonts;
-    return *this;
+	mFonts = fonts;
+	return *this;
 }
 ImGui::Options& ImGui::Options::fontGlyphRanges( const std::string &name, const vector<ImWchar> &glyphRanges )
 {
-    mFontsGlyphRanges[name] = glyphRanges;
-    return *this;
+	mFontsGlyphRanges[name] = glyphRanges;
+	return *this;
 }
 ImGui::Options& ImGui::Options::alpha( float a )
 {
-    mStyle.Alpha = a;
-    return *this;
+	mStyle.Alpha = a;
+	return *this;
 }
 ImGui::Options& ImGui::Options::windowPadding( const glm::vec2 &padding )
 {
-    mStyle.WindowPadding = padding;
-    return *this;
+	mStyle.WindowPadding = padding;
+	return *this;
 }
 ImGui::Options& ImGui::Options::windowMinSize( const glm::vec2 &minSize )
 {
-    mStyle.WindowMinSize = minSize;
-    return *this;
+	mStyle.WindowMinSize = minSize;
+	return *this;
 }
 ImGui::Options& ImGui::Options::windowRounding( float rounding )
 {
-    mStyle.WindowRounding = rounding;
-    return *this;
+	mStyle.WindowRounding = rounding;
+	return *this;
 }
 ImGui::Options& ImGui::Options::windowTitleAlign( ImGuiAlign align )
 {
-    mStyle.WindowTitleAlign = align;
-    return *this;
+	mStyle.WindowTitleAlign = align;
+	return *this;
 }
 ImGui::Options& ImGui::Options::childWindowRounding( float rounding )
 {
-    mStyle.ChildWindowRounding = rounding;
-    return *this;
+	mStyle.ChildWindowRounding = rounding;
+	return *this;
 }
 
 ImGui::Options& ImGui::Options::framePadding( const glm::vec2 &padding )
 {
-    mStyle.FramePadding = padding;
-    return *this;
+	mStyle.FramePadding = padding;
+	return *this;
 }
 ImGui::Options& ImGui::Options::frameRounding( float rounding )
 {
-    mStyle.FrameRounding = rounding;
-    return *this;
+	mStyle.FrameRounding = rounding;
+	return *this;
 }
 ImGui::Options& ImGui::Options::itemSpacing( const glm::vec2 &spacing )
 {
-    mStyle.ItemSpacing = spacing;
-    return *this;
+	mStyle.ItemSpacing = spacing;
+	return *this;
 }
 ImGui::Options& ImGui::Options::itemInnerSpacing( const glm::vec2 &spacing )
 {
-    mStyle.ItemInnerSpacing = spacing;
-    return *this;
+	mStyle.ItemInnerSpacing = spacing;
+	return *this;
 }
 ImGui::Options& ImGui::Options::touchExtraPadding( const glm::vec2 &padding )
 {
-    mStyle.TouchExtraPadding = padding;
-    return *this;
+	mStyle.TouchExtraPadding = padding;
+	return *this;
 }
 ImGui::Options& ImGui::Options::windowFillAlphaDefault( float defaultAlpha )
 {
-    mStyle.WindowFillAlphaDefault = defaultAlpha;
-    return *this;
+	mStyle.WindowFillAlphaDefault = defaultAlpha;
+	return *this;
 }
 ImGui::Options& ImGui::Options::indentSpacing( float spacing )
 {
-    mStyle.IndentSpacing = spacing;
-    return *this;
+	mStyle.IndentSpacing = spacing;
+	return *this;
 }
 ImGui::Options& ImGui::Options::columnsMinSpacing( float minSpacing )
 {
-    mStyle.ColumnsMinSpacing = minSpacing;
-    return *this;
+	mStyle.ColumnsMinSpacing = minSpacing;
+	return *this;
 }
 ImGui::Options& ImGui::Options::scrollBarSize( float size )
 {
-    mStyle.ScrollbarSize = size;
-    return *this;
+	mStyle.ScrollbarSize = size;
+	return *this;
 }
 ImGui::Options& ImGui::Options::scrollbarRounding( float rounding )
 {
@@ -200,14 +201,19 @@ ImGui::Options& ImGui::Options::curveTessellationTol( float tessTolerance )
 	mStyle.CurveTessellationTol = tessTolerance;
 	return *this;
 }
-	
+ImGui::Options& ImGui::Options::iniPath( const ci::fs::path &path )
+{
+	mIniPath = path;
+	return *this;
+}
+
 const ImWchar* ImGui::Options::getFontGlyphRanges( const std::string &name ) const
 {
-    if( mFontsGlyphRanges.count( name ) )
-        return &mFontsGlyphRanges.find(name)->second[0];
-    else return NULL;
+	if( mFontsGlyphRanges.count( name ) )
+		return &mFontsGlyphRanges.find(name)->second[0];
+	else return NULL;
 }
-	
+
 ImGui::Options& ImGui::Options::defaultTheme()
 {
 	mStyle = ImGuiStyle();
@@ -221,17 +227,17 @@ ImGui::Options& ImGui::Options::darkTheme()
 	mStyle.FramePadding             = ImVec2( 4, 2 );
 	mStyle.ItemSpacing              = ImVec2( 6, 2 );
 	mStyle.ItemInnerSpacing         = ImVec2( 6, 4 );
-	mStyle.Alpha					= 0.95f;
+	mStyle.Alpha			= 0.95f;
 	mStyle.WindowFillAlphaDefault   = 1.0f;
 	mStyle.WindowRounding           = 4.0f;
 	mStyle.FrameRounding            = 2.0f;
 	mStyle.IndentSpacing            = 6.0f;
-	mStyle.ItemInnerSpacing			= ImVec2( 2, 4 );
+	mStyle.ItemInnerSpacing		= ImVec2( 2, 4 );
 	mStyle.ColumnsMinSpacing        = 50.0f;
-	mStyle.GrabMinSize				= 14.0f;
-	mStyle.GrabRounding				= 16.0f;
-	mStyle.ScrollbarSize			= 12.0f;
-	mStyle.ScrollbarRounding		= 16.0f;
+	mStyle.GrabMinSize		= 14.0f;
+	mStyle.GrabRounding		= 16.0f;
+	mStyle.ScrollbarSize		= 12.0f;
+	mStyle.ScrollbarRounding	= 16.0f;
 	
 	ImGuiStyle& style = mStyle;
 	style.Colors[ImGuiCol_Text]                  = ImVec4(0.86f, 0.93f, 0.89f, 0.61f);
@@ -291,47 +297,47 @@ ImGui::Options& ImGui::Options::color( ImGuiCol option, const ci::ColorA &color 
 //! cinder renderer
 class Renderer {
 public:
-    Renderer();
-    
-    //! renders imgui drawlist
-    void render( ImDrawData* draw_data );
-    //! sets the font
-    ImFont* addFont( ci::DataSourceRef font, float size, const ImWchar* glyph_ranges = NULL );
-    
-    //! initializes and returns the font texture
-    ci::gl::Texture2dRef getFontTextureRef();
-    //! initializes and returns the vao
-    ci::gl::VaoRef getVao();
-    //! initializes and returns the vbo
-    ci::gl::VboRef getVbo();
-    //! initializes and returns the shader
-    ci::gl::GlslProgRef getGlslProg();
-    
-    //! initializes the font texture
-    void initFontTexture();
-    //! initializes the vbo mesh
-    void initBuffers( size_t size = 1000 );
-    //! initializes the shader
-    void initGlslProg();
-    
-    ImFont* getFont( const std::string &name );
-    
+	Renderer();
+	
+	//! renders imgui drawlist
+	void render( ImDrawData* draw_data );
+	//! sets the font
+	ImFont* addFont( ci::DataSourceRef font, float size, const ImWchar* glyph_ranges = NULL );
+	
+	//! initializes and returns the font texture
+	ci::gl::Texture2dRef getFontTextureRef();
+	//! initializes and returns the vao
+	ci::gl::VaoRef getVao();
+	//! initializes and returns the vbo
+	ci::gl::VboRef getVbo();
+	//! initializes and returns the shader
+	ci::gl::GlslProgRef getGlslProg();
+	
+	//! initializes the font texture
+	void initFontTexture();
+	//! initializes the vbo mesh
+	void initBuffers( size_t size = 1000 );
+	//! initializes the shader
+	void initGlslProg();
+	
+	ImFont* getFont( const std::string &name );
+	
 protected:
-    ci::gl::Texture2dRef    mFontTexture;
-	ci::gl::VaoRef          mVao;
-	ci::gl::VboRef          mVbo;
-	ci::gl::VboRef          mIbo;
-    ci::gl::GlslProgRef     mShader;
-    
-    map<string,ImFont*>     mFonts;
+	ci::gl::Texture2dRef	mFontTexture;
+	ci::gl::VaoRef		mVao;
+	ci::gl::VboRef		mVbo;
+	ci::gl::VboRef		mIbo;
+	ci::gl::GlslProgRef		mShader;
+	
+	map<string,ImFont*>		mFonts;
 };
 
 
 
 Renderer::Renderer()
 {
-    initGlslProg();
-    initBuffers();
+	initGlslProg();
+	initBuffers();
 }
 
 //! renders imgui drawlist
@@ -344,10 +350,10 @@ void Renderer::render( ImDrawData* draw_data )
 	
 	const mat4 mat =
 	{
-		{ 2.0f/width,	0.0f,			0.0f,		0.0f },
-		{ 0.0f,			2.0f/-height,	0.0f,		0.0f },
-		{ 0.0f,			0.0f,			-1.0f,		0.0f },
-		{ -1.0f,		1.0f,			0.0f,		1.0f },
+		{ 2.0f/width,	0.0f,		0.0f,	0.0f },
+		{ 0.0f,		2.0f/-height,	0.0f,	0.0f },
+		{ 0.0f,		0.0f,		-1.0f,	0.0f },
+		{ -1.0f,	1.0f,		0.0f,	1.0f },
 	};
 	// mat = glm::translate( mat, vec3( 0.375f, 0.375f, 0.0f ) );
 	
@@ -382,14 +388,14 @@ void Renderer::render( ImDrawData* draw_data )
 				pcmd->UserCallback(cmd_list, pcmd);
 			}
 			else {
-				gl::ScopedVao           scopedVao( getVao().get() );
-				gl::ScopedBuffer		scopedIndexBuffer( mIbo );
-				gl::ScopedGlslProg      scopedShader( getGlslProg() );
-				gl::ScopedTextureBind	scopedTexture( GL_TEXTURE_2D, (GLuint)(intptr_t) pcmd->TextureId );
-				gl::ScopedScissor		scopedScissors( (int)pcmd->ClipRect.x, (int)(height - pcmd->ClipRect.w), (int)(pcmd->ClipRect.z - pcmd->ClipRect.x), (int)(pcmd->ClipRect.w - pcmd->ClipRect.y) );
-				gl::ScopedDepth			scopedDepth( false );
-				gl::ScopedBlendAlpha	scopedBlend;
-				gl::ScopedFaceCulling	scopedFaceCulling( false );
+				gl::ScopedVao scopedVao( getVao().get() );
+				gl::ScopedBuffer scopedIndexBuffer( mIbo );
+				gl::ScopedGlslProg scopedShader( getGlslProg() );
+				gl::ScopedTextureBind scopedTexture( GL_TEXTURE_2D, (GLuint)(intptr_t) pcmd->TextureId );
+				gl::ScopedScissor scopedScissors( (int)pcmd->ClipRect.x, (int)(height - pcmd->ClipRect.w), (int)(pcmd->ClipRect.z - pcmd->ClipRect.x), (int)(pcmd->ClipRect.w - pcmd->ClipRect.y) );
+				gl::ScopedDepth scopedDepth( false );
+				gl::ScopedBlendAlpha scopedBlend;
+				gl::ScopedFaceCulling scopedFaceCulling( false );
 				
 				mIbo->bufferData( pcmd->ElemCount * sizeof(ImDrawIdx), idx_buffer, GL_STREAM_DRAW );
 				gl::drawElements( GL_TRIANGLES, (GLsizei) pcmd->ElemCount, GL_UNSIGNED_SHORT, nullptr );
@@ -402,27 +408,27 @@ void Renderer::render( ImDrawData* draw_data )
 //! initializes and returns the font texture
 gl::TextureRef Renderer::getFontTextureRef()
 {
-    if( !mFontTexture ){
-        initFontTexture();
-    }
-    return mFontTexture;
+	if( !mFontTexture ){
+		initFontTexture();
+	}
+	return mFontTexture;
 }
 //! initializes and returns the vbo mesh
 gl::VaoRef Renderer::getVao()
 {
-    if( !mVao ){
-        initBuffers();
-    }
-    return mVao;
+	if( !mVao ){
+		initBuffers();
+	}
+	return mVao;
 }
 
 //! initializes and returns the vbo
 gl::VboRef Renderer::getVbo()
 {
-    if( !mVbo ){
-        initBuffers();
-    }
-    return mVbo;
+	if( !mVbo ){
+		initBuffers();
+	}
+	return mVbo;
 }
 
 //! initializes the vbo mesh
@@ -430,29 +436,29 @@ void Renderer::initBuffers( size_t size )
 {
 	mVbo    = gl::Vbo::create( GL_ARRAY_BUFFER, size, nullptr, GL_STREAM_DRAW );
 	mIbo    = gl::Vbo::create( GL_ELEMENT_ARRAY_BUFFER, 10, nullptr, GL_STREAM_DRAW );
-    mVao    = gl::Vao::create();
-    
-    gl::ScopedVao mVaoScope( mVao );
-    gl::ScopedBuffer mVboScope( mVbo );
-    
-    gl::enableVertexAttribArray( 0 );
-    gl::enableVertexAttribArray( 1 );
-    gl::enableVertexAttribArray( 2 );
-    
-    gl::vertexAttribPointer( 0, 2, GL_FLOAT, GL_FALSE, sizeof(ImDrawVert), (const GLvoid*)offsetof(ImDrawVert, pos) );
-    gl::vertexAttribPointer( 1, 2, GL_FLOAT, GL_FALSE, sizeof(ImDrawVert), (const GLvoid*)offsetof(ImDrawVert, uv) );
-    gl::vertexAttribPointer( 2, 4, GL_UNSIGNED_BYTE, GL_TRUE, sizeof(ImDrawVert), (const GLvoid*)offsetof(ImDrawVert, col) );
-    
+	mVao    = gl::Vao::create();
+	
+	gl::ScopedVao mVaoScope( mVao );
+	gl::ScopedBuffer mVboScope( mVbo );
+	
+	gl::enableVertexAttribArray( 0 );
+	gl::enableVertexAttribArray( 1 );
+	gl::enableVertexAttribArray( 2 );
+	
+	gl::vertexAttribPointer( 0, 2, GL_FLOAT, GL_FALSE, sizeof(ImDrawVert), (const GLvoid*)offsetof(ImDrawVert, pos) );
+	gl::vertexAttribPointer( 1, 2, GL_FLOAT, GL_FALSE, sizeof(ImDrawVert), (const GLvoid*)offsetof(ImDrawVert, uv) );
+	gl::vertexAttribPointer( 2, 4, GL_UNSIGNED_BYTE, GL_TRUE, sizeof(ImDrawVert), (const GLvoid*)offsetof(ImDrawVert, col) );
+	
 }
 //! initalizes the font texture
 void Renderer::initFontTexture()
 {
-    unsigned char* pixels;
-    int width, height;
-    ImGui::GetIO().Fonts->GetTexDataAsRGBA32(&pixels, &width, &height);
-    mFontTexture = gl::Texture::create( pixels, GL_RGBA, width, height, gl::Texture::Format().magFilter(GL_LINEAR).minFilter(GL_LINEAR) );
-    ImGui::GetIO().Fonts->ClearTexData();
-    ImGui::GetIO().Fonts->TexID = (void *)(intptr_t) mFontTexture->getId();
+	unsigned char* pixels;
+	int width, height;
+	ImGui::GetIO().Fonts->GetTexDataAsRGBA32(&pixels, &width, &height);
+	mFontTexture = gl::Texture::create( pixels, GL_RGBA, width, height, gl::Texture::Format().magFilter(GL_LINEAR).minFilter(GL_LINEAR) );
+	ImGui::GetIO().Fonts->ClearTexData();
+	ImGui::GetIO().Fonts->TexID = (void *)(intptr_t) mFontTexture->getId();
 }
 
 /*ImFont* addFont( ci::DataSourceRef font, float size, int fontId )
@@ -464,148 +470,148 @@ void Renderer::initFontTexture()
 
 ImFont* Renderer::addFont( ci::DataSourceRef font, float size, const ImWchar* glyph_ranges )
 {
-    ImFontAtlas* fontAtlas  = ImGui::GetIO().Fonts;
+	ImFontAtlas* fontAtlas  = ImGui::GetIO().Fonts;
 	
-    Font ciFont( font, size );
-    
-    BufferRef buffer		= font->getBuffer();
-    void* bufferCopy        = (void*) malloc( buffer->getSize() );
-    memcpy( bufferCopy, buffer->getData(), buffer->getSize() );
+	Font ciFont( font, size );
+	
+	BufferRef buffer		= font->getBuffer();
+	void* bufferCopy        = (void*) malloc( buffer->getSize() );
+	memcpy( bufferCopy, buffer->getData(), buffer->getSize() );
 	
 	ImFontConfig config;
-    ImFont* newFont         = fontAtlas->AddFontFromMemoryTTF( bufferCopy, buffer->getSize(), size, &config, glyph_ranges );
-    
-    mFonts.insert( make_pair( font->getFilePath().stem().string(), newFont ) );
-    return newFont;
+	ImFont* newFont         = fontAtlas->AddFontFromMemoryTTF( bufferCopy, buffer->getSize(), size, &config, glyph_ranges );
+	
+	mFonts.insert( make_pair( font->getFilePath().stem().string(), newFont ) );
+	return newFont;
 }
 
 //! initalizes and returns the shader
 gl::GlslProgRef Renderer::getGlslProg()
 {
-    if( !mShader ){
-        initGlslProg();
-    }
-    return mShader;
+	if( !mShader ){
+		initGlslProg();
+	}
+	return mShader;
 }
 
 //! initalizes the shader
 void Renderer::initGlslProg()
 {
-    try {
-        mShader = gl::GlslProg::create( gl::GlslProg::Format()
-									   .vertex(
-#if defined(CINDER_GL_ES_2)
-												R"(
-												precision highp float;
-												uniform mat4 uModelViewProjection;
-
-												attribute vec2      iPosition;
-												attribute vec2      iUv;
-												attribute vec4      iColor;
-
-												varying vec2     vUv;
-												varying vec4     vColor;
-
-												void main() {
-												   vColor       = iColor;
-												   vUv          = iUv;
-												   gl_Position  = uModelViewProjection * vec4( iPosition, 0.0, 1.0 );
-												} )"
-#elif defined(CINDER_GL_ES_3)
-												R"(
-												#version 300 es
-												precision highp float;
-												uniform mat4 uModelViewProjection;
-
-												in vec2      iPosition;
-												in vec2      iUv;
-												in vec4      iColor;
-
-												out vec2     vUv;
-												out vec4     vColor;
-
-												void main() {
-													vColor       = iColor;
-													vUv          = iUv;
-													gl_Position  = uModelViewProjection * vec4( iPosition, 0.0, 1.0 );
-												} )"
-#else
-												R"(
-												#version 150
-												uniform mat4 uModelViewProjection;
-												in vec2      iPosition;
-												in vec2      iUv;
-												in vec4      iColor;
-												out vec2     vUv;
-												out vec4     vColor;
-												void main() {
-													vColor       = iColor;
-													vUv          = iUv;
-													gl_Position  = uModelViewProjection * vec4( iPosition, 0.0, 1.0 );
-												} )"
-
-#endif
-										)
-                                       .fragment(
-#if defined(CINDER_GL_ES_2)
-												R"(
-												precision highp float;
-
-												varying highp vec2		vUv;
-												varying highp vec4		vColor;
-												uniform sampler2D	uTex;
-
-												void main() {
-													vec4 color = texture2D( uTex, vUv ) * vColor;
-													gl_FragColor = color;
-												}  )"
-#elif defined(CINDER_GL_ES_3)
-												R"(
-												#version 300 es
-												precision highp float;
-
-												in highp vec2		vUv;
-												in highp vec4		vColor;
-												out highp vec4      oColor;
-												uniform sampler2D	uTex;
-
-												void main() {
-													vec4 color = texture( uTex, vUv ) * vColor;
-													oColor = color;
-												}  )"
-#else
-												 R"(
-												 #version 150
-
-												 in vec2            vUv;
-												 in vec4				vColor;
-												 out vec4			oColor;
-												 uniform sampler2D	uTex;
-
-												 void main() {
-													 vec4 color = texture( uTex, vUv ) * vColor;
-													 oColor = color;
-												 }  )"
+	try {
+		mShader = gl::GlslProg::create( gl::GlslProg::Format()
+					       .vertex(
+					#if defined(CINDER_GL_ES_2)
+						       R"(
+						       precision highp float;
+						       uniform mat4 uModelViewProjection;
+						       
+						       attribute vec2      iPosition;
+						       attribute vec2      iUv;
+						       attribute vec4      iColor;
+						       
+						       varying vec2     vUv;
+						       varying vec4     vColor;
+						       
+						       void main() {
+							       vColor       = iColor;
+							       vUv          = iUv;
+							       gl_Position  = uModelViewProjection * vec4( iPosition, 0.0, 1.0 );
+						       } )"
+					#elif defined(CINDER_GL_ES_3)
+					       R"(
+						#version 300 es
+					       precision highp float;
+					       uniform mat4 uModelViewProjection;
+					       
+					       in vec2      iPosition;
+					       in vec2      iUv;
+					       in vec4      iColor;
+					       
+					       out vec2     vUv;
+					       out vec4     vColor;
+					       
+					       void main() {
+						       vColor       = iColor;
+						       vUv          = iUv;
+						       gl_Position  = uModelViewProjection * vec4( iPosition, 0.0, 1.0 );
+					       } )"
+					#else
+						R"(
+						#version 150
+						uniform mat4 uModelViewProjection;
+						in vec2      iPosition;
+						in vec2      iUv;
+						in vec4      iColor;
+						out vec2     vUv;
+						out vec4     vColor;
+						void main() {
+							vColor       = iColor;
+							vUv          = iUv;
+							gl_Position  = uModelViewProjection * vec4( iPosition, 0.0, 1.0 );
+						} )"
+						
+					#endif
+		)
+		.fragment(
+	#if defined(CINDER_GL_ES_2)
+			  R"(
+			  precision highp float;
+			  
+			  varying highp vec2	vUv;
+			  varying highp vec4	vColor;
+			  uniform sampler2D	uTex;
+			  
+			  void main() {
+				  vec4 color = texture2D( uTex, vUv ) * vColor;
+				  gl_FragColor = color;
+			  }  )"
+	#elif defined(CINDER_GL_ES_3)
+		R"(
+		#version 300 es
+		precision highp float;
 		
-#endif
-										 )
-                                       .attribLocation( "iPosition", 0 )
-                                       .attribLocation( "iUv", 1 )
-                                       .attribLocation( "iColor", 2 )
-                                       );
-    }
-    catch( gl::GlslProgCompileExc exc ){
-        CI_LOG_E( "Problem Compiling ImGui::Renderer shader " << exc.what() );
-    }
+		in highp vec2		vUv;
+		in highp vec4		vColor;
+		out highp vec4		oColor;
+		uniform sampler2D	uTex;
+		
+		void main() {
+			vec4 color = texture( uTex, vUv ) * vColor;
+			oColor = color;
+		}  )"
+	#else
+		R"(
+		#version 150
+		
+		in vec2			vUv;
+		in vec4			vColor;
+		out vec4		oColor;
+		uniform sampler2D	uTex;
+		
+		void main() {
+			vec4 color = texture( uTex, vUv ) * vColor;
+			oColor = color;
+		}  )"
+		
+	#endif
+		)
+		.attribLocation( "iPosition", 0 )
+		.attribLocation( "iUv", 1 )
+		.attribLocation( "iColor", 2 )
+		);
+	}
+	catch( gl::GlslProgCompileExc exc ){
+		CI_LOG_E( "Problem Compiling ImGui::Renderer shader " << exc.what() );
+	}
 }
 ImFont* Renderer::getFont( const std::string &name )
 {
-    if( !mFonts.count( name ) ){
-        return nullptr;
-    }
-    else {
-        return mFonts[name];
-    }
+	if( !mFonts.count( name ) ){
+		return nullptr;
+	}
+	else {
+		return mFonts[name];
+	}
 }
 
 
@@ -615,24 +621,24 @@ RendererRef getRenderer()
 	static RendererRef renderer = RendererRef( new Renderer() );
 	return renderer;
 }
-	
-	
+
+
 // Cinder Helpers
 void Image( const ci::gl::Texture2dRef &texture, const ImVec2& size, const ImVec2& uv0, const ImVec2& uv1, const ImVec4& tint_col, const ImVec4& border_col )
 {
-    Image( (void*)(intptr_t) texture->getId(), size, uv0, uv1, tint_col, border_col );
+	Image( (void*)(intptr_t) texture->getId(), size, uv0, uv1, tint_col, border_col );
 }
 bool ImageButton( const ci::gl::Texture2dRef &texture, const ImVec2& size, const ImVec2& uv0, const ImVec2& uv1, int frame_padding, const ImVec4& bg_col, const ImVec4& tint_col)
 {
-    return ImageButton( (void*)(intptr_t) texture->getId(), size, uv0, uv1, frame_padding, bg_col, tint_col );
+	return ImageButton( (void*)(intptr_t) texture->getId(), size, uv0, uv1, frame_padding, bg_col, tint_col );
 }
 
 void PushFont( const std::string& name )
 {
-    auto renderer   = getRenderer();
-    ImFont* font    = renderer->getFont( name );
-    CI_ASSERT( font != nullptr );
-    PushFont( font );
+	auto renderer   = getRenderer();
+	ImFont* font    = renderer->getFont( name );
+	CI_ASSERT( font != nullptr );
+	PushFont( font );
 }
 
 // Std Helpers
@@ -689,9 +695,9 @@ bool Combo( const char* label, int* current_item, const std::vector<std::string>
 	bool result = Combo( label, current_item, (const char*) &charArray[0], height_in_items );
 	return result;
 }
-	
-namespace {
 
+namespace {
+	
 	//! sets the right mouseDown IO values in imgui
 	void mouseDown( ci::app::MouseEvent& event )
 	{
@@ -741,10 +747,10 @@ namespace {
 		
 		event.setHandled( io.WantCaptureMouse );
 	}
-		
-
+	
+	
 	vector<int> sAccelKeys;
-		
+	
 	//! sets the right keyDown IO values in imgui
 	void keyDown( ci::app::KeyEvent& event )
 	{
@@ -758,9 +764,9 @@ namespace {
 			io.AddInputCharacter( ( char ) character );
 		}
 		else if( event.getCode() != KeyEvent::KEY_LMETA
-				&& event.getCode() != KeyEvent::KEY_RMETA
-				&& event.isAccelDown()
-				&& find( sAccelKeys.begin(), sAccelKeys.end(), event.getCode() ) == sAccelKeys.end() ){
+			&& event.getCode() != KeyEvent::KEY_RMETA
+			&& event.isAccelDown()
+			&& find( sAccelKeys.begin(), sAccelKeys.end(), event.getCode() ) == sAccelKeys.end() ){
 			sAccelKeys.push_back( event.getCode() );
 		}
 		
@@ -790,23 +796,27 @@ namespace {
 	}
 	void resize()
 	{
-		ImGuiIO& io		= ImGui::GetIO();
+		ImGuiIO& io	= ImGui::GetIO();
 		io.DisplaySize	= toPixels( getWindowSize() );
 	}
-
+	
 	static bool sNewFrame = false;
 	void render()
 	{
 		static auto timer = ci::Timer(true);
-		ImGuiIO& io                 = ImGui::GetIO();
-		io.DeltaTime                = timer.getSeconds();
+		ImGuiIO& io = ImGui::GetIO();
+		io.DeltaTime = timer.getSeconds();
 		timer.start();
 		
 		ImGui::Render();
-		sNewFrame                   = false;
-		App::get()->dispatchAsync( [](){ ImGui::NewFrame(); sNewFrame = true; } );
+		sNewFrame = false;
+		App::get()->dispatchAsync( []()
+		{
+			ImGui::NewFrame();
+			sNewFrame = true;
+		} );
 	}
-
+	
 	void newFrameGuard()
 	{
 		if( !sNewFrame ){
@@ -814,42 +824,58 @@ namespace {
 		}
 	}
 	
-} // Anonymous namespace
+	void resetKeys()
+	{
+		for( int i = 0; i < IM_ARRAYSIZE( ImGui::GetIO().KeysDown ); i++ ) {
+			ImGui::GetIO().KeysDown[i] = false;
+		}
+		for( int i = 0; i < IM_ARRAYSIZE( ImGui::GetIO().KeysDownDuration ); i++ ) {
+			ImGui::GetIO().KeysDownDuration[i] = 0.0f;
+		}
+		for( int i = 0; i < IM_ARRAYSIZE( ImGui::GetIO().KeysDownDurationPrev ); i++ ) {
+			ImGui::GetIO().KeysDownDurationPrev[i] = 0.0f;
+		}
+		ImGui::GetIO().KeyCtrl	= false;
+		ImGui::GetIO().KeyShift = false;
+		ImGui::GetIO().KeyAlt	= false;
+	}
 	
+} // Anonymous namespace
+
 // wrong... and would not work in a multi-windows scenario
 static vector<signals::Connection> sWindowConnections;
 
-	
+
 
 void initialize( const Options &options )
 {
-	auto renderer                       = getRenderer();
-	auto window                         = options.getWindow();
+	auto renderer				= getRenderer();
+	auto window				= options.getWindow();
 	
 	// set style
-	const ImGuiStyle& style             = options.getStyle();
-	ImGuiStyle& imGuiStyle              = ImGui::GetStyle();
-	imGuiStyle.Alpha                    = style.Alpha;
-	imGuiStyle.WindowPadding            = style.WindowPadding;
-	imGuiStyle.WindowMinSize            = style.WindowMinSize;
-	imGuiStyle.WindowRounding           = style.WindowRounding;
-	imGuiStyle.WindowTitleAlign			= style.WindowTitleAlign;
+	const ImGuiStyle& style			= options.getStyle();
+	ImGuiStyle& imGuiStyle			= ImGui::GetStyle();
+	imGuiStyle.Alpha			= style.Alpha;
+	imGuiStyle.WindowPadding		= style.WindowPadding;
+	imGuiStyle.WindowMinSize		= style.WindowMinSize;
+	imGuiStyle.WindowRounding		= style.WindowRounding;
+	imGuiStyle.WindowTitleAlign		= style.WindowTitleAlign;
 	imGuiStyle.ChildWindowRounding		= style.ChildWindowRounding;
-	imGuiStyle.FramePadding             = style.FramePadding;
-	imGuiStyle.FrameRounding            = style.FrameRounding;
-	imGuiStyle.ItemSpacing              = style.ItemSpacing;
-	imGuiStyle.ItemInnerSpacing         = style.ItemInnerSpacing;
-	imGuiStyle.TouchExtraPadding        = style.TouchExtraPadding;
-	imGuiStyle.WindowFillAlphaDefault   = style.WindowFillAlphaDefault;
-	imGuiStyle.IndentSpacing            = style.IndentSpacing;
+	imGuiStyle.FramePadding			= style.FramePadding;
+	imGuiStyle.FrameRounding		= style.FrameRounding;
+	imGuiStyle.ItemSpacing			= style.ItemSpacing;
+	imGuiStyle.ItemInnerSpacing		= style.ItemInnerSpacing;
+	imGuiStyle.TouchExtraPadding		= style.TouchExtraPadding;
+	imGuiStyle.WindowFillAlphaDefault	= style.WindowFillAlphaDefault;
+	imGuiStyle.IndentSpacing		= style.IndentSpacing;
 	imGuiStyle.ColumnsMinSpacing		= style.ColumnsMinSpacing;
-	imGuiStyle.ScrollbarSize			= style.ScrollbarSize;
+	imGuiStyle.ScrollbarSize		= style.ScrollbarSize;
 	imGuiStyle.ScrollbarRounding		= style.ScrollbarRounding;
-	imGuiStyle.GrabMinSize				= style.GrabMinSize;
-	imGuiStyle.GrabRounding				= style.GrabRounding;
+	imGuiStyle.GrabMinSize			= style.GrabMinSize;
+	imGuiStyle.GrabRounding			= style.GrabRounding;
 	imGuiStyle.DisplayWindowPadding		= style.DisplayWindowPadding;
 	imGuiStyle.DisplaySafeAreaPadding	= style.DisplaySafeAreaPadding;
-	imGuiStyle.AntiAliasedLines			= style.AntiAliasedLines;
+	imGuiStyle.AntiAliasedLines		= style.AntiAliasedLines;
 	imGuiStyle.AntiAliasedShapes		= style.AntiAliasedShapes;
 	
 	// set colors
@@ -880,6 +906,8 @@ void initialize( const Options &options )
 	
 	// setup config file path
 	static string path = ( getAssetPath( "" ) / "imgui.ini" ).string();
+	if( ! options.getIniPath().empty() )
+		path = options.getIniPath().c_str();
 	io.IniFilename = path.c_str();
 	
 	// setup fonts
@@ -924,49 +952,53 @@ void initialize( const Options &options )
 		sWindowConnections.push_back( window->getSignalPostDraw().connect( render ) );
 	}
 	
+	// connect app's signals
+	app::App::get()->getSignalDidBecomeActive().connect( resetKeys );
+	app::App::get()->getSignalWillResignActive().connect( resetKeys );
+	
 	sInitialized = true;
 }
-	
-	
+
+
 void connectWindow( ci::app::WindowRef window )
 {
-    sWindowConnections = {
-        window->getSignalMouseDown().connect( mouseDown ),
-        window->getSignalMouseUp().connect( mouseUp ),
-        window->getSignalMouseDrag().connect( mouseDrag ),
-        window->getSignalMouseMove().connect( mouseMove ),
-        window->getSignalMouseWheel().connect( mouseWheel ),
-        window->getSignalKeyDown().connect( keyDown ),
-        window->getSignalKeyUp().connect( keyUp ),
-        window->getSignalResize().connect( resize ),
-    };
+	sWindowConnections = {
+		window->getSignalMouseDown().connect( mouseDown ),
+		window->getSignalMouseUp().connect( mouseUp ),
+		window->getSignalMouseDrag().connect( mouseDrag ),
+		window->getSignalMouseMove().connect( mouseMove ),
+		window->getSignalMouseWheel().connect( mouseWheel ),
+		window->getSignalKeyDown().connect( keyDown ),
+		window->getSignalKeyUp().connect( keyUp ),
+		window->getSignalResize().connect( resize ),
+	};
 }
 void disconnectWindow( ci::app::WindowRef window )
 {
-    for( auto connection : sWindowConnections ){
-        connection.disconnect();
-    }
+	for( auto connection : sWindowConnections ){
+		connection.disconnect();
+	}
 }
-	
+
 ScopedWindow::ScopedWindow( const std::string &name, ImGuiWindowFlags flags)
 {
 	ImGui::Begin( name.c_str(), nullptr, flags );
 }
 ScopedWindow::ScopedWindow( const std::string &name, glm::vec2 size, float fillAlpha, ImGuiWindowFlags flags )
 {
-    ImGui::Begin( name.c_str(), nullptr, size, fillAlpha, flags );
+	ImGui::Begin( name.c_str(), nullptr, size, fillAlpha, flags );
 }
 ScopedWindow::~ScopedWindow()
 {
-    ImGui::End();
+	ImGui::End();
 }
 ScopedChild::ScopedChild( const std::string &name, glm::vec2 size, bool border, ImGuiWindowFlags extraFlags )
 {
-    ImGui::BeginChild( name.c_str(), size, border, extraFlags );
+	ImGui::BeginChild( name.c_str(), size, border, extraFlags );
 }
 ScopedChild::~ScopedChild()
 {
-    ImGui::EndChild();
+	ImGui::EndChild();
 }
 ScopedGroup::ScopedGroup()
 {
@@ -982,66 +1014,66 @@ ScopedFont::ScopedFont( ImFont* font )
 }
 ScopedFont::ScopedFont( const std::string &name )
 {
-    ImGui::PushFont( name );
+	ImGui::PushFont( name );
 }
 ScopedFont::~ScopedFont()
 {
-    ImGui::PopFont();
+	ImGui::PopFont();
 }
 ScopedStyleColor::ScopedStyleColor( ImGuiCol idx, const ImVec4& col )
 {
-    ImGui::PushStyleColor( idx, col );
+	ImGui::PushStyleColor( idx, col );
 }
 ScopedStyleColor::~ScopedStyleColor()
 {
-    ImGui::PopStyleColor();
+	ImGui::PopStyleColor();
 }
 ScopedStyleVar::ScopedStyleVar( ImGuiStyleVar idx, float val )
 {
-    ImGui::PushStyleVar( idx, val );
+	ImGui::PushStyleVar( idx, val );
 }
 ScopedStyleVar::ScopedStyleVar( ImGuiStyleVar idx, const ImVec2 &val )
 {
-    ImGui::PushStyleVar( idx, val );
+	ImGui::PushStyleVar( idx, val );
 }
 ScopedStyleVar::~ScopedStyleVar()
 {
-    ImGui::PopStyleVar();
+	ImGui::PopStyleVar();
 }
 
 ScopedItemWidth::ScopedItemWidth( float itemWidth )
 {
-    ImGui::PushItemWidth( itemWidth );
+	ImGui::PushItemWidth( itemWidth );
 }
 ScopedItemWidth::~ScopedItemWidth()
 {
-    ImGui::PopItemWidth();
+	ImGui::PopItemWidth();
 }
 
 ScopedTextWrapPos::ScopedTextWrapPos( float wrapPosX )
 {
-    ImGui::PushTextWrapPos( wrapPosX );
+	ImGui::PushTextWrapPos( wrapPosX );
 }
 ScopedTextWrapPos::~ScopedTextWrapPos()
 {
-    ImGui::PopTextWrapPos();
+	ImGui::PopTextWrapPos();
 }
 
 ScopedId::ScopedId( const std::string &name )
 {
-    ImGui::PushID( name.c_str() );
+	ImGui::PushID( name.c_str() );
 }
 ScopedId::ScopedId( const void *ptrId )
 {
-    ImGui::PushID( ptrId );
+	ImGui::PushID( ptrId );
 }
 ScopedId::ScopedId( const int intId )
 {
-    ImGui::PushID( intId );
+	ImGui::PushID( intId );
 }
 ScopedId::~ScopedId()
 {
-    ImGui::PopID();
+	ImGui::PopID();
 }
 
 ScopedMainMenuBar::ScopedMainMenuBar()
