@@ -114,11 +114,11 @@ CascadedShadowMappingApp::CascadedShadowMappingApp()
 	auto source = ObjLoader( loadAsset( "terrain.obj" ) );
 	for( size_t i = 0; i < source.getNumGroups(); ++i ) {
 		auto trimesh = TriMesh( source.groupIndex( i ) );
-		mScene.push_back( {
+		mScene.push_back( make_tuple(
 			gl::Batch::create( source, shader ),
 			gl::Batch::create( source, shadowShader ),
 			trimesh.calcBoundingBox()
-		});
+		) );
 	}
 	
 	// load baked ao texture
