@@ -36,19 +36,19 @@ public:
 	float	getSplitLambda() const { return mSplitLambda; }
 	
 	//! returns the shadow maps 3d texture
-	gl::Texture3dRef		getShadowMap() const { return static_pointer_cast<gl::Texture3d>( mShadowMapArray->getTextureBase( GL_COLOR_ATTACHMENT0 ) ); }
+	gl::Texture3dRef	getShadowMap() const { return static_pointer_cast<gl::Texture3d>( mShadowMapArray->getTextureBase( GL_COLOR_ATTACHMENT0 ) ); }
 	//! returns the shadow maps framebuffer
-	const gl::FboRef&		getShadowMapArray() const { return mShadowMapArray; }
+	const gl::FboRef&	getShadowMapArray() const { return mShadowMapArray; }
 	//! returns the GlslProg used to draw the shadow maps to the screen
 	const gl::GlslProgRef&	getDebugProg() const { return mDebugProg; }
 	//! returns the cascades split planes
-	const vector<vec2>&		getSplitPlanes() const { return mSplitPlanes; }
+	const vector<vec2>&	getSplitPlanes() const { return mSplitPlanes; }
 	//! returns the cascades view matrices
-	const vector<mat4>&		getViewMatrices() const { return mViewMatrices; }
+	const vector<mat4>&	getViewMatrices() const { return mViewMatrices; }
 	//! returns the cascades projection matrices
-	const vector<mat4>&		getProjMatrices() const { return mProjMatrices; }
+	const vector<mat4>&	getProjMatrices() const { return mProjMatrices; }
 	//! returns the cascades shadow matrices
-	const vector<mat4>&		getShadowMatrices() const { return mShadowMatrices; }
+	const vector<mat4>&	getShadowMatrices() const { return mShadowMatrices; }
 	//! returns the cascades near planes
 	const vector<float>&	getNearPlanes() const { return mNearPlanes; }
 	//! returns the cascades far planes
@@ -59,14 +59,14 @@ public:
 protected:
 	void createFramebuffers();
 	
-	gl::FboRef			mShadowMapArray;
-	gl::FboRef			mBlurFbo;
+	gl::FboRef		mShadowMapArray;
+	gl::FboRef		mBlurFbo;
 	gl::GlslProgRef		mDebugProg;
 	gl::GlslProgRef		mFilterProg;
 	
-	size_t				mResolution;
-	float				mExpC;
-	float				mSplitLambda;
+	size_t			mResolution;
+	float			mExpC;
+	float			mSplitLambda;
 	vector<vec2>		mSplitPlanes;
 	vector<mat4>		mViewMatrices;
 	vector<mat4>		mProjMatrices;
@@ -86,18 +86,18 @@ class CascadedShadowMappingApp : public App {
 	
 	// Scene Objects
 	using Object = std::tuple<gl::BatchRef,gl::BatchRef,AxisAlignedBox>;
-	CameraPersp			mCamera;
-	CameraUi			mCameraUi;
+	CameraPersp		mCamera;
+	CameraUi		mCameraUi;
 	vector<Object>		mScene;
-	vec3				mLightDir;
+	vec3			mLightDir;
 	
 	// Framebuffer and textures
 	CascadedShadowsRef	mCascadedShadows;
 	gl::Texture2dRef	mAmbientOcclusion;
 	
 	// options
-	bool				mPolygonOffset, mFiltering, mShowCascades, mShowUi, mShowShadowMaps;
-	int					mShadowMapSize;
+	bool			mPolygonOffset, mFiltering, mShowCascades, mShowUi, mShowShadowMaps;
+	int			mShadowMapSize;
 };
 
 
@@ -132,11 +132,11 @@ CascadedShadowMappingApp::CascadedShadowMappingApp()
 	mCameraUi	= CameraUi( &mCamera, getWindow(), -1 );
 	
 	// initial options
-	mLightDir		= normalize( vec3( -1.4f, -0.37f, 0.63f ) );
+	mLightDir	= normalize( vec3( -1.4f, -0.37f, 0.63f ) );
 	mShowShadowMaps = false;
 	mShowCascades	= false;
 	mPolygonOffset	= true;
-	mFiltering		= true;
+	mFiltering	= true;
 }
 void CascadedShadowMappingApp::resize()
 {

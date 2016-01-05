@@ -27,25 +27,25 @@ public:
 	void userInterface();
 	
 	// light / shadows
-	vec3				mLightPos;
-	CameraPersp			mLightCamera;
-	gl::FboRef			mLightFbo;
-	gl::FboRef			mBlurFbo;
+	vec3			mLightPos;
+	CameraPersp		mLightCamera;
+	gl::FboRef		mLightFbo;
+	gl::FboRef		mBlurFbo;
 	gl::GlslProgRef		mGaussianBlur;
 	
 	// Scene Objects
-	CameraPersp			mCamera;
-	CameraUi			mCameraUi;
+	CameraPersp		mCamera;
+	CameraUi		mCameraUi;
 	
 	using Material = tuple<ci::Color,float,float>;
 	using Object = tuple<gl::BatchRef,gl::BatchRef,Material>;
 	vector<Object>		mSceneObjects;
 	
 	// options
-	float				mExpC, mErrorEPS;
-	bool				mPolygonOffset, mFiltering, mMultisampling, mShowErrors, mAnimateLight, mShowUi;
-	int					mMultisamplingSamples;
-	int					mShadowMapSize;
+	float			mExpC, mErrorEPS;
+	bool			mPolygonOffset, mFiltering, mMultisampling, mShowErrors, mAnimateLight, mShowUi;
+	int			mMultisamplingSamples;
+	int			mShadowMapSize;
 
 };
 
@@ -69,16 +69,16 @@ ExponentialShadowMapApp::ExponentialShadowMapApp()
 	} );
 	
 	// set initial options
-	mShadowMapSize			= 2048;
-	mExpC					= 110.0f;
-	mPolygonOffset			= true;
-	mFiltering				= false;
-	mMultisampling			= true;
+	mShadowMapSize		= 2048;
+	mExpC			= 110.0f;
+	mPolygonOffset		= true;
+	mFiltering		= false;
+	mMultisampling		= true;
 	mMultisamplingSamples	= 4;
-	mErrorEPS				= 0.1f;
-	mShowErrors				= false;
-	mAnimateLight			= true;
-	mShowUi					= false;
+	mErrorEPS		= 0.1f;
+	mShowErrors		= false;
+	mAnimateLight		= true;
+	mShowUi			= false;
 	
 	// create light camera, textures and fbos
 	mLightCamera = CameraPersp( 1024, 1024, 80.0f, 0.1f, 18.0f );

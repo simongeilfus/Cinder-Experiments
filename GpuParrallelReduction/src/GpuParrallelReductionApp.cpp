@@ -18,13 +18,13 @@ class GpuParrallelReductionApp : public App {
 	
 	vec4 findMindMax();
 	
-	CameraPersp				mCamera;
-	CameraUi				mCameraUi;
+	CameraPersp	mCamera;
+	CameraUi	mCameraUi;
 	
-	gl::FboRef				mFbo;
+	gl::FboRef	mFbo;
 	
-	double					mReductionTime;
-	double					mReadBackTime;
+	double		mReductionTime;
+	double		mReadBackTime;
 };
 
 GpuParrallelReductionApp::GpuParrallelReductionApp()

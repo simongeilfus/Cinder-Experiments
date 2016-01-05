@@ -28,7 +28,7 @@ public:
 	gl::Texture2dRef	mSourceTexture;
 	gl::Texture3dRef	mColorGradingLut;
 	gl::GlslProgRef		mColorGradingProg;
-	float				mDiagonal, mDiagonalTarget;
+	float			mDiagonal, mDiagonalTarget;
 };
 
 ColorGradingApp::ColorGradingApp()
@@ -101,8 +101,8 @@ void ColorGradingApp::mouseUp( MouseEvent event )
 
 void ColorGradingApp::readLookupTable( const ci::DataSourceRef &lutImage, const ci::ivec3 &lutSize )
 {
-	mColorGradingLut		= gl::Texture3d::create( lutSize.z, lutSize.z, lutSize.z );
-	auto surface	= Surface( loadImage( lutImage ) );
+	mColorGradingLut = gl::Texture3d::create( lutSize.z, lutSize.z, lutSize.z );
+	auto surface = Surface( loadImage( lutImage ) );
 	for( int i = 0; i < lutSize.z; i++ ){
 		mColorGradingLut->update( surface.clone( Area( ivec2( i * lutSize.z, 0 ), ivec2( i * lutSize.z + lutSize.x, lutSize.y ) ) ), i );
 	}

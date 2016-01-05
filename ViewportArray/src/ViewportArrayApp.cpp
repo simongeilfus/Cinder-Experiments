@@ -22,12 +22,12 @@ public:
 	
 	void updateViewports();
 	
-	gl::FboRef				mFbo;
-	gl::BatchRef			mTeapot;
+	gl::FboRef		mFbo;
+	gl::BatchRef		mTeapot;
 	
 	array<CameraPersp,4>	mCameras;
-	CameraUi				mCameraUi;
-	vector<Rectf>			mViewports;
+	CameraUi		mCameraUi;
+	vector<Rectf>		mViewports;
 };
 
 void ViewportArrayApp::setup()
@@ -36,7 +36,7 @@ void ViewportArrayApp::setup()
 	auto shForm = gl::GlslProg::Format().vertex( loadAsset( "shader.vert" ) ).geometry( loadAsset( "shader.geom" ) ).fragment( loadAsset( "shader.frag" ) );
 	auto shader = gl::GlslProg::create( shForm );
 	auto geom = geom::Teapot().subdivisions(10) >> geom::ColorFromAttrib(geom::Attrib::NORMAL, (const std::function<Colorf(vec3)>&) [](vec3 v){ return Colorf(v.x, v.y, v.z); });
-	mTeapot		= gl::Batch::create( geom, shader );
+	mTeapot = gl::Batch::create( geom, shader );
 	
 	// create 4 cameras randomly spread around the teapot
 	randSeed( 12345 );

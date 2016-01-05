@@ -42,18 +42,18 @@ class ParallaxCorrectedCubemapApp : public App {
 	void renderCubemap();
 	void userInterface();
 	
-	gl::BatchRef			mRoom, mSkyBox;
-	gl::Texture2dRef		mLightMap, mRoughnessMap, mNormalMap;
-	gl::FboCubeMapRef		mFboCubemap;
+	gl::BatchRef		mRoom, mSkyBox;
+	gl::Texture2dRef	mLightMap, mRoughnessMap, mNormalMap;
+	gl::FboCubeMapRef	mFboCubemap;
 	gl::TextureCubeMapRef	mSkyBoxTexture;
 
-	CameraPersp				mCamera;
-	CameraUi				mCameraUi;
-	vec3					mCubemapPosition;
-	vec3					mCubemapSize;
-	AxisAlignedBox			mCubemapBounds;
+	CameraPersp		mCamera;
+	CameraUi		mCameraUi;
+	vec3			mCubemapPosition;
+	vec3			mCubemapSize;
+	AxisAlignedBox		mCubemapBounds;
 	
-	bool					mShowUi, mDrawCubemapBounds, mDrawCubemap;
+	bool			mShowUi, mDrawCubemapBounds, mDrawCubemap;
 };
 
 ParallaxCorrectedCubemapApp::ParallaxCorrectedCubemapApp()
@@ -95,7 +95,7 @@ ParallaxCorrectedCubemapApp::ParallaxCorrectedCubemapApp()
 	} );
 	
 	// initial options
-	mShowUi				= false;
+	mShowUi			= false;
 	mDrawCubemapBounds	= false;
 	mDrawCubemap		= false;
 	
